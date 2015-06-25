@@ -5,9 +5,9 @@
 # the BSD 2-Clause license. Note that NO WARRANTY is provided.
 # See "LICENSE_BSD2.txt" for details.
 
-apps-$(CONFIG_APP_MINIMAL_HELLOWORLD) += minimal-helloworld
+apps-$(CONFIG_APP_MIN_HW) += min-hw
 
 # LIbraries needed
-minimal-helloworld-y = libsel4
+min-hw-y = libsel4
 
-minimal-helloworld: kernel_elf $(minimal-helloworld-y)
+min-hw: kernel_elf $(min-hw-y)

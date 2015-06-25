@@ -5,8 +5,8 @@
 # the BSD 2-Clause license. Note that NO WARRANTY is provided.
 # See "LICENSE_BSD2.txt" for details.
 
-menuconfig APP_MINIMAL_HELLOWORLD
-    bool "minimal-helloworld"
+menuconfig APP_MIN_HW
+    bool "min-hw"
     default y
     depends on LIB_SEL4
     help
