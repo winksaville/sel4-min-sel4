@@ -1,0 +1,9 @@
+images/
+build/
+stage/
+include/config/
+include/generated/
+
+/libs/libsel4
+.config
+.config.old
