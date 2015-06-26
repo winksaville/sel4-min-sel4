@@ -1,3 +1,3 @@
-# sel4-min-hw
+# sel4-app-bootinfo
 
-A minimal helloworld which tests libsel4
+An seL4 application which displays bootinfo and other TBD functionality.
