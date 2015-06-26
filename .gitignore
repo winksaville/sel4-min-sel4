@@ -4,5 +4,6 @@ stage/
 include/config/
 include/generated/
 
+*.swp
 .config
 .config.old
