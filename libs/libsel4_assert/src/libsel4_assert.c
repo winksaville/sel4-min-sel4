@@ -20,7 +20,7 @@ void _libsel4_fail(const char* s, const char* file, unsigned int line,
 }
 
 /**
- * Invoked by macro libsel4_fail in libsel4_assert.h
+ * Invoked by macro libsel4_assert_fail in libsel4_assert.h
  */
 void _libsel4_assert_fail(const char* assertion, const char* file, unsigned int line,
 	const char*  function) {

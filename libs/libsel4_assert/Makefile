@@ -6,15 +6,18 @@
 # See "LICENSE_BSD2.txt" for details.
 
 # Targets
-TARGETS := libsel4assert.a
+TARGETS := libsel4_assert.a
 
 # Source files required to build the target
-CFILES   := src/assert.c
+CFILES   := src/libsel4_assert.c
 
 ASMFILES :=
 
 # Libraries we need
-LIBS :=
+LIBS := sel4_halt sel4_printf
+
+# Header files defined here that need to be staged
+HDRFILES := $(SOURCE_DIR)/include/*.h
 
 # extra flags
 CFLAGS += -Werror -ggdb -g3
