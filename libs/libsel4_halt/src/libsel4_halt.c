@@ -6,12 +6,12 @@
  * See "LICENSE_BSD2.txt" for details.
  */
 
-#include <halt.h>
+#include <libsel4_halt.h>
 
 /**
  * Halt execution of the current thread.
  */
-void halt(void) {
+void libsel4_halt(void) {
     /** Do something nicer */
     while(1) {
     }

@@ -6,15 +6,18 @@
 # See "LICENSE_BSD2.txt" for details.
 
 # Targets
-TARGETS := libsel4halt.a
+TARGETS := libsel4_halt.a
 
 # Source files required to build the target
-CFILES   := src/halt.c
+CFILES   := src/libsel4_halt.c
 
 ASMFILES :=
 
 # Libraries we need
 LIBS :=
+
+# Header files defined here that need to be staged
+HDRFILES := $(SOURCE_DIR)/include/*.h
 
 # extra flags
 CFLAGS += -Werror -ggdb -g3

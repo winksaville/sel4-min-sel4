@@ -10,4 +10,4 @@ menuconfig LIB_SEL4_HALT
     bool "Build sel4 halt library"
     default n
     help
-        "Implements halt() used by libsel4asssert when an assert fails."
+        Implements libsel4_halt() used by libsel4_assert when an assert fails.

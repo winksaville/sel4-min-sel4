@@ -6,5 +6,5 @@
 # See "LICENSE_BSD2.txt" for details.
 #
 
-libs-$(CONFIG_LIB_SEL4_HALT) += libsel4halt
-libsel4halt: common
+libs-$(CONFIG_LIB_SEL4_HALT) += libsel4_halt
+libsel4_halt: common
