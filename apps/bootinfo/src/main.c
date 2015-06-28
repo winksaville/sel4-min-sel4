@@ -7,7 +7,7 @@
  */
 
 #include <stdbool.h>
-#include <libsel4_io.h>
+#include <libsel4_printf.h>
 #include <sel4/bootinfo.h>
 
 void println_SlotRegionEOL(seL4_SlotRegion *sr, bool eol) {

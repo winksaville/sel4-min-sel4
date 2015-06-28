@@ -8,6 +8,7 @@
 apps-$(CONFIG_APP_BOOTINFO) += bootinfo
 
 # LIbraries needed
-bootinfo-y = libsel4
+bootinfo-y = libsel4 libsel4_gen libsel4_startup libsel4_bootinfo \
+		 libsel4_putchar libsel4_printf
 
 bootinfo: kernel_elf $(bootinfo-y)

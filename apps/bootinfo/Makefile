@@ -17,7 +17,7 @@ CFILES   := src/main.c
 ASMFILES :=
 
 # Libraries we need
-LIBS := sel4
+LIBS := sel4 sel4_gen sel4_startup sel4_bootinfo sel4_putchar sel4_printf
 
 # extra flags
 CFLAGS += -Werror -ggdb -g3
