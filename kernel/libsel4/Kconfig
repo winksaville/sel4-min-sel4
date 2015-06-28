@@ -10,16 +10,13 @@
 
 menuconfig LIB_SEL4
     bool "Build sel4 library"
-    default y
+    default n
+    select LIB_SEL4_GEN
+    select LIB_SEL4_STARTUP
+    select LIB_SEL4_BOOTINFO
+    select LIB_SEL4_PUTCHAR
+    select LIB_SEL4_HALT
+    select LIB_SEL4_ASSERT
+    select LIB_SEL4_PRINTF
     help
         "Build the sel4 library"
-
-config LIB_SEL4_STUBS_USE_IPC_BUFFER_ONLY
-    bool "use only IPC buffer for syscalls"
-    depends on LIB_SEL4
-    default n
-    help
-        When generating syscall wrappers, only use the IPC buffer for
-        marshalling and unmarshalling arguments. Without this option set,
-        arguments will be passed in registers where possible for better
-        performance.
