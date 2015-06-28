@@ -6,5 +6,9 @@
 # See "LICENSE_BSD2.txt" for details.
 #
 
-libs-$(CONFIG_LIB_SEL4_ASSERT) += libsel4assert
-libsel4assert: common
+menuconfig LIB_SEL4_PRINTF
+    bool "Build sel4 printf library"
+    default n
+    select LIB_SEL4_PUTCHAR
+    help
+        "Build the sel4 printf library which defines libsel4_printf"
