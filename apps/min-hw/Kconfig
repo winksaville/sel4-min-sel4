@@ -7,8 +7,11 @@
 
 menuconfig APP_MIN_HW
     bool "min-hw"
-    default y
-    depends on LIB_SEL4
+    default n
+    select LIB_SEL4_GEN
+    select LIB_SEL4_STARTUP
+    select LIB_SEL4_BOOTINFO
+    select LIB_SEL4_PUTCHAR
     help
         Minimal Hello World application
 
