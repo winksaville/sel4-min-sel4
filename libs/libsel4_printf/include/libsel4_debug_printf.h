@@ -11,7 +11,7 @@
 
 #ifdef NDEBUG
 
-/** NOP printf as DEBUG is not defined */
+/** NOP printf as NDEBUG is defined */
 #define libsel4_debug_printf(...) ((void)(0))
 
 #else
