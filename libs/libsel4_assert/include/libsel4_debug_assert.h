@@ -13,10 +13,10 @@
 
 #ifdef NDEBUG
 
-/** NOP assert as DEBUG is not defined */
+/** NOP assert as NDEBUG is defined */
 #define libsel4_debug_assert(expr) ((void)(0))
 
-/** NOP compile time assert as DEBUG is not defined */
+/** NOP compile time assert as NDEBUG is defined */
 #define libsel4_debug_compile_assert(name, expr) ((void)(0))
 
 #else
