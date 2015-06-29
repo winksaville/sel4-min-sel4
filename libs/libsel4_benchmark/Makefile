@@ -11,13 +11,13 @@ TARGETS := libsel4_benchmark.a
 # Source files required to build the target
 CFILES :=
 
-ASMFILES := \
+ASMFILES :=
 
 # Libraries we need
 LIBS :=
 
 # Header files defined here that need to be staged
-HDRFILES := $(wildcard $(SOURCE_DIR)/include/sel4/*.h)
+HDRFILES := $(wildcard $(SOURCE_DIR)/include/*)
 
 # extra flags
 CFLAGS += -Werror -ggdb -g3

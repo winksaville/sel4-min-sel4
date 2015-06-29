@@ -11,14 +11,16 @@
 #ifndef LIBSEL4_BENCHMARK
 #define LIBSEL4_BENCHMARK
 
+#include <autoconf.h>
+
 #ifdef CONFIG_BENCHMARK
 
 /* entire ipc buffer except tag register (word 0) */
 #define MAX_IPC_BUFFER (1024 - 1)
 
-#include <sel4/sel4.h>
 #include <stdint.h>
-#include <libsel4_io.h>
+#include <libsel4_printf.h>
+#include <sel4/arch/syscalls.h>
 
 static inline void
 seL4_BenchmarkDumpFullLog()
@@ -43,6 +45,10 @@ seL4_BenchmarkDumpFullLog()
     /* logged amount was smaller than log buffer */
     libsel4_printf("Dumped entire log, size %u\n", potential_size);
 }
+
+#else
+
+#pragma message "In " __FILE__ " CONFIG_BENCHMARK not defined. Select 'seL4 Kernel' -> 'seL4 System Parameters' -> 'Adds a log buffer to the kernel ...'"
 
 #endif /* CONFIG_BENCHMARK */
 #endif /* LIBSEL4_BENCHMARK */
