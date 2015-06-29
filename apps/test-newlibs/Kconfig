@@ -12,6 +12,7 @@ menuconfig APP_TEST_NEWLIBS
     select LIB_SEL4_STARTUP 
     select LIB_SEL4_BOOTINFO 
     select LIB_SEL4_HALT 
+    select LIB_SEL4_BENCHMARK 
     select LIB_SEL4_PUTCHAR 
     select LIB_SEL4_ASSERT 
     select LIB_SEL4_PRINTF 
