@@ -11,10 +11,10 @@
 #include <sel4/bootinfo.h>
 #include <sel4/arch/functions.h>
 
-/** Considert moving bootinfo libsel4_startup */
+/** Consider moving bootinfo into libsel4_startup */
 seL4_BootInfo* bootinfo;
 
-/** Considert seL4_InitBootInfo to libsel4_startup */
+/** Consider moving seL4_InitBootInfo into libsel4_startup */
 void seL4_InitBootInfo(seL4_BootInfo* bi)
 {
     bootinfo = bi;
