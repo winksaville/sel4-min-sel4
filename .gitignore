@@ -3,7 +3,9 @@ build/
 stage/
 include/config/
 include/generated/
+.idea/
 
 *.swp
 .config
 .config.old
+CMakeLists.txt
