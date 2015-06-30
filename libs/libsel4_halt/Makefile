@@ -9,7 +9,7 @@
 TARGETS := libsel4_halt.a
 
 # Source files required to build the target
-CFILES   := src/libsel4_halt.c
+CFILES   := src/sel4_halt.c
 
 ASMFILES :=
 
