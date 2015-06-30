@@ -9,7 +9,7 @@
 TARGETS := libsel4_assert.a
 
 # Source files required to build the target
-CFILES   := src/libsel4_assert.c
+CFILES   := src/sel4_assert.c
 
 ASMFILES :=
 
