@@ -9,15 +9,12 @@
 TARGETS := libsel4_printf.a
 
 # Source files required to build the target
-CFILES   := src/libsel4_printf.c
+CFILES   := src/sel4_printf.c
 
 ASMFILES :=
 
 # Libraries we need
 LIBS := sel4_putchar
-
-#$(warning "libsel4_printf LIBS=$(LIBS)")
-#libsel4_printf.a: libsel4_putchar.a
 
 # Header files defined here that need to be staged
 HDRFILES := $(SOURCE_DIR)/include/*.h

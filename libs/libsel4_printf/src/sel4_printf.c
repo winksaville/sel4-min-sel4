@@ -8,25 +8,25 @@
  * @TAG(GD_GPL)
  */
 
-#include <stdint.h>
-#include <stdarg.h>
-#include <libsel4_putchar.h>
-#include <libsel4_printf.h>
+#include <sel4_types.h>
+#include <sel4_vargs.h>
+#include <sel4_putchar.h>
+#include <sel4_printf.h>
 
-static unsigned int
+static sel4_uint32_t
 print_string(const char *s)
 {
-    unsigned int n;
+    sel4_uint32_t n;
 
     for (n = 0; *s; s++, n++) {
-        libsel4_putchar(*s);
+        sel4_putchar(*s);
     }
 
     return n;
 }
 
-static unsigned long
-xdiv(unsigned long x, unsigned int denom)
+static sel4_uint32_t
+xdiv(sel4_uint32_t x, sel4_uint32_t denom)
 {
     switch (denom) {
     case 16:
@@ -38,8 +38,8 @@ xdiv(unsigned long x, unsigned int denom)
     }
 }
 
-static unsigned long
-xmod(unsigned long x, unsigned int denom)
+static sel4_uint32_t
+xmod(sel4_uint32_t x, sel4_uint32_t denom)
 {
     switch (denom) {
     case 16:
@@ -51,12 +51,12 @@ xmod(unsigned long x, unsigned int denom)
     }
 }
 
-unsigned int
-libsel4_print_unsigned_long(unsigned long x, unsigned int ui_base)
+sel4_uint32_t
+sel4_print_sel4_uint32_t(sel4_uint32_t x, sel4_uint32_t ui_base)
 {
     char out[11];
-    unsigned int i, j;
-    unsigned int d;
+    sel4_uint32_t i, j;
+    sel4_uint32_t d;
 
     /*
      * Only base 10 and 16 supported for now. We want to avoid invoking the
@@ -67,7 +67,7 @@ libsel4_print_unsigned_long(unsigned long x, unsigned int ui_base)
     }
 
     if (x == 0) {
-        libsel4_putchar('0');
+        sel4_putchar('0');
         return 1;
     }
 
@@ -82,19 +82,19 @@ libsel4_print_unsigned_long(unsigned long x, unsigned int ui_base)
     }
 
     for (j = i; j > 0; j--) {
-        libsel4_putchar(out[j - 1]);
+        sel4_putchar(out[j - 1]);
     }
 
     return i;
 }
 
 
-static unsigned int
-print_unsigned_long_long(unsigned long long x, unsigned int ui_base)
+static sel4_uint32_t
+print_sel4_uint64_t(sel4_uint64_t x, sel4_uint32_t ui_base)
 {
-    unsigned long upper, lower;
-    unsigned int n = 0;
-    unsigned int mask = 0xF0000000u;
+    sel4_uint32_t upper, lower;
+    sel4_uint32_t n = 0;
+    sel4_uint32_t mask = 0xF0000000u;
 
     /* only implemented for hex, decimal is harder without 64 bit division */
     if (ui_base != 16) {
@@ -102,33 +102,33 @@ print_unsigned_long_long(unsigned long long x, unsigned int ui_base)
     }
 
     /* we can't do 64 bit division so break it up into two hex numbers */
-    upper = (unsigned long) (x >> 32llu);
-    lower = (unsigned long) x;
+    upper = (sel4_uint32_t) (x >> 32llu);
+    lower = (sel4_uint32_t) x;
 
     /* print first 32 bits if they exist */
     if (upper > 0) {
-        n += libsel4_print_unsigned_long(upper, ui_base);
+        n += sel4_print_uint32_t(upper, ui_base);
 
         /* print leading 0s */
         while (!(mask & lower)) {
-            libsel4_putchar('0');
+            sel4_putchar('0');
             n++;
             mask = mask >> 4;
         }
     }
 
     /* print last 32 bits */
-    n += libsel4_print_unsigned_long(lower, ui_base);
+    n += sel4_print_uint32_t(lower, ui_base);
 
     return n;
 }
 
 
 static int
-vprintf(const char *format, va_list ap)
+vprintf(const char *format, sel4_va_list ap)
 {
-    unsigned int n;
-    unsigned int formatting;
+    sel4_uint32_t n;
+    sel4_uint32_t formatting;
 
     if (!format) {
         return 0;
@@ -140,57 +140,57 @@ vprintf(const char *format, va_list ap)
         if (formatting) {
             switch (*format) {
             case '%':
-                libsel4_putchar('%');
+                sel4_putchar('%');
                 n++;
                 format++;
                 break;
 
             case 'd': {
-                int x = va_arg(ap, int);
+                int x = sel4_va_arg(ap, int);
 
                 if (x < 0) {
-                    libsel4_putchar('-');
+                    sel4_putchar('-');
                     n++;
                     x = -x;
                 }
 
-                n += libsel4_print_unsigned_long((unsigned long)x, 10);
+                n += sel4_print_sel4_uint32_t((sel4_uint32_t)x, 10);
                 format++;
                 break;
             }
 
             case 'u':
-                n += libsel4_print_unsigned_long(va_arg(ap, unsigned long), 10);
+                n += sel4_print_sel4_uint32_t(sel4_va_arg(ap, sel4_uint32_t), 10);
                 format++;
                 break;
 
             case 'x':
-                n += libsel4_print_unsigned_long(va_arg(ap, unsigned long), 16);
+                n += sel4_print_sel4_uint32_t(sel4_va_arg(ap, sel4_uint32_t), 16);
                 format++;
                 break;
 
             case 'p': {
-                unsigned long p = va_arg(ap, unsigned long);
+                sel4_uint32_t p = sel4_va_arg(ap, sel4_uint32_t);
                 if (p == 0) {
                     n += print_string("(nil)");
                 } else {
                     n += print_string("0x");
-                    n += libsel4_print_unsigned_long(p, 16);
+                    n += sel4_print_sel4_uint32_t(p, 16);
                 }
                 format++;
                 break;
             }
 
             case 's':
-                n += print_string(va_arg(ap, char *));
+                n += print_string(sel4_va_arg(ap, char *));
                 format++;
                 break;
 
             case 'l':
 		// Support llx only
                 if (*(format + 1) == 'l' && *(format + 2) == 'x') {
-                    uint64_t arg = va_arg(ap, unsigned long long);
-                    n += print_unsigned_long_long(arg, 16);
+                    sel4_uint64_t arg = sel4_va_arg(ap, sel4_uintt64_t);
+                    n += print_sel4_uint64_t(arg, 16);
                     format += 3;
                 }
                 break;
@@ -208,7 +208,7 @@ vprintf(const char *format, va_list ap)
                 break;
 
             default:
-                libsel4_putchar(*format);
+                sel4_putchar(*format);
                 n++;
                 format++;
                 break;
@@ -224,20 +224,20 @@ vprintf(const char *format, va_list ap)
  * subset of the typical libc printf:
  *   - %% ::= prints a percent
  *   - %d ::= prints a positive or negative long base 10
- *   - %u ::= prints an unsigned long base 10
- *   - %x ::= prints a unsigned long base 16
- *   - %p ::= prints a unsigned long assuming its a pointer base 16 with 0x prepended
+ *   - %u ::= prints an sel4_uint32_t base 10
+ *   - %x ::= prints a sel4_uint32_t base 16
+ *   - %p ::= prints a sel4_uint32_t assuming its a pointer base 16 with 0x prepended
  *   - %s ::= prints a string
- *   - %llx ::= prints a unsigned long long base 16
+ *   - %llx ::= prints a sel4_uint32_t long base 16
  */
-unsigned int
-libsel4_printf(const char *format, ...)
+sel4_uint32_t
+sel4_printf(const char *format, ...)
 {
-    va_list args;
-    unsigned int i;
+    sel4_va_list args;
+    sel4_uint32_t i;
 
-    va_start(args, format);
+    sel4_va_start(args, format);
     i = vprintf(format, args);
-    va_end(args);
+    sel4_va_end(args);
     return i;
 }

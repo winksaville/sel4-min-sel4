@@ -6,8 +6,8 @@
  * See "LICENSE_BSD2.txt" for details.
  */
 
-#ifndef __LIBSEL4_PRINTF_H
-#define __LIBSEL4_PRINTF_H
+#ifndef __SEL4_PRINTF_H
+#define __SEL4_PRINTF_H
 
 /**
  * Print a formated string to a "terminal". This supports a
@@ -20,6 +20,6 @@
  *   - %s ::= prints a string
  *   - %llx ::= prints a unsigned long long base 16
  */
-unsigned int libsel4_printf(const char *format, ...);
+unsigned int sel4_printf(const char *format, ...);
 
 #endif

@@ -6,17 +6,17 @@
  * See "LICENSE_BSD2.txt" for details.
  */
 
-#ifndef __LIBSEL4_DEBUG_PRINTF_H
-#define __LIBSEL4_DEBUG_PRINTF_H
+#ifndef __SEL4_DEBUG_PRINTF_H
+#define __SEL4_DEBUG_PRINTF_H
 
 #ifdef NDEBUG
 
 /** NOP printf as NDEBUG is defined */
-#define libsel4_debug_printf(...) ((void)(0))
+#define sel4_debug_printf(...) ((void)(0))
 
 #else
 
-#include <libsel4_printf.h>
+#include <sel4_printf.h>
 
 /**
  * Print a formated string to a "terminal". This supports a
@@ -29,7 +29,7 @@
  *   - %s ::= prints a string
  *   - %llx ::= prints a unsigned long long base 16
  */
-#define libsel4_debug_printf(...) libsel4_printf(__VA_ARGS__)
+#define sel4_debug_printf(...) libsel4_printf(__VA_ARGS__)
 
 #endif
 
