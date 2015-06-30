@@ -9,7 +9,7 @@
 TARGETS := libsel4_bootinfo.a
 
 # Source files required to build the target
-CFILES   := src/bootinfo.c
+CFILES   := src/sel4_bootinfo.c
 
 ASMFILES :=
 

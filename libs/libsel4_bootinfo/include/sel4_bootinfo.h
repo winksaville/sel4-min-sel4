@@ -8,12 +8,11 @@
  * @TAG(NICTA_BSD)
  */
 
-#ifndef __LIBSEL4_BOOTINFO_H
-#define __LIBSEL4_BOOTINFO_H
+#ifndef __SEL4_BOOTINFO_H
+#define __SEL4_BOOTINFO_H
 
 #include <autoconf.h>
-#include <sel4/types.h>
-#include <stdint.h>
+#include <sel4_types.h>
 
 /* caps with fixed slot potitions in the root CNode */
 
@@ -61,16 +60,16 @@ typedef struct {
     seL4_SlotRegion   userImagePTs;    /* userland-image PT caps */
     seL4_SlotRegion   untyped;         /* untyped-object caps (untyped caps) */
     seL4_Word         untypedPaddrList   [CONFIG_MAX_NUM_BOOTINFO_UNTYPED_CAPS]; /* physical address of each untyped cap */
-    uint8_t           untypedSizeBitsList[CONFIG_MAX_NUM_BOOTINFO_UNTYPED_CAPS]; /* size (2^n) bytes of each untyped cap */
-    uint8_t           initThreadCNodeSizeBits; /* initial thread's root CNode size (2^n slots) */
+    sel4_uint8_t      untypedSizeBitsList[CONFIG_MAX_NUM_BOOTINFO_UNTYPED_CAPS]; /* size (2^n) bytes of each untyped cap */
+    sel4_uint8_t      initThreadCNodeSizeBits; /* initial thread's root CNode size (2^n slots) */
     seL4_Word         numDeviceRegions;        /* number of device regions */
     seL4_DeviceRegion deviceRegions[CONFIG_MAX_NUM_BOOTINFO_DEVICE_REGIONS]; /* device regions */
-    uint32_t          initThreadDomain; /* Initial thread's domain ID */
-} seL4_BootInfo;
+    sel4_uint32_t     initThreadDomain; /* Initial thread's domain ID */
+} seL4_BootInfo_t;
 
 /* function declarations */
 
-void seL4_InitBootInfo(seL4_BootInfo* bi);
-seL4_BootInfo* seL4_GetBootInfo(void);
+void seL4_InitBootInfo(seL4_BootInfo_t* bi);
+seL4_BootInfo_* seL4_GetBootInfo(void);
 
-#endif
+#endif // __SEL4_BOOTINFO_H
