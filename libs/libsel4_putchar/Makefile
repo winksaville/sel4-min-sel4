@@ -9,7 +9,7 @@
 TARGETS := libsel4_putchar.a
 
 # Source files required to build the target
-CFILES   := src/libsel4_putchar.c
+CFILES   := src/sel4_putchar.c
 
 ASMFILES :=
 

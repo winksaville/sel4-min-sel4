@@ -6,12 +6,18 @@
  * See "LICENSE_BSD2.txt" for details.
  */
 
-#ifndef __LIBSEL4_PUTCHAR_H
-#define __LIBSEL4_PUTCHAR_H
+#include <sel4_putchar.h>
+
+#include <sel4/arch/syscalls.h>
+
 
 /**
  * Output ch to a "terminal"
  */
-void libsel4_putchar(const char ch);
-
+void sel4_putchar(const char ch) {
+#ifdef DEBUG
+    seL4_DebugPutChar(ch);
+#else
+    // TODO: we need seL4_PutChar ????
 #endif
+}
