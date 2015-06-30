@@ -6,7 +6,7 @@
 # See "LICENSE_BSD2.txt" for details.
 
 # Targets
-TARGETS := libsel4_benchmark.a
+TARGETS := sel4_benchmark.a
 
 # Source files required to build the target
 CFILES :=
