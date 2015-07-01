@@ -9,9 +9,9 @@
 #ifndef _SEL4_VARGS_H_
 #define _SEL4_VARGS_H_
 
-#define sel4_va_list_t __builtin_va_list
-#define sel4_va_start(list, last_param) __builtin_va_start(list, last_param)
-#define sel4_va_end(list) __builtin_va_end(list)
-#define sel4_va_arg(list, type) __builtin_va_arg(list, type)
+#define seL4_VaList __builtin_va_list
+#define seL4_VaStart(list, last_param) __builtin_va_start(list, last_param)
+#define seL4_VaEnd(list) __builtin_va_end(list)
+#define seL4_VaArg(list, type) __builtin_va_arg(list, type)
 
 #endif

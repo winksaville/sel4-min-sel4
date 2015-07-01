@@ -10,7 +10,8 @@ menuconfig APP_BOOTINFO
     default n
     select LIB_SEL4_GEN 
     select LIB_SEL4_STARTUP 
-    select LIB_SEL4_BOOTINFO 
+    select LIB_SEL4_HALT
+    select LIB_SEL4_BOOTINFO
     select LIB_SEL4_PUTCHAR 
     select LIB_SEL4_PRINTF 
     help

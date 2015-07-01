@@ -8,7 +8,7 @@
  * @TAG(NICTA_BSD)
  */
 
-#include <sel4/bootinfo.h>
+#include <sel4_bootinfo.h>
 #include <sel4/arch/functions.h>
 
 /** Consider moving bootinfo into libsel4_startup */

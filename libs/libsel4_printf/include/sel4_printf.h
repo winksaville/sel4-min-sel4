@@ -20,6 +20,6 @@
  *   - %s ::= prints a string
  *   - %llx ::= prints a unsigned long long base 16
  */
-unsigned int sel4_printf(const char *format, ...);
+unsigned int seL4_Printf(const char *format, ...);
 
 #endif

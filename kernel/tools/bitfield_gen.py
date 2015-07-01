@@ -33,7 +33,7 @@ DEBUG = False
 # Headers to include depending on which environment we are generating code for.
 INCLUDES = {
     'sel4':['config.h', 'stdint.h', 'util.h'],
-    'libsel4':['autoconf.h', 'sel4/macros.h', 'stdint.h'],
+    'libsel4':['autoconf.h', 'sel4_types.h'],
 }
 
 ### Parser
@@ -178,6 +178,26 @@ def p_error(t):
 ### Templates
 
 ## C templates
+
+type_template = {
+    "sel4": [
+        {8: "uint8_t"},
+        {16: "uint16_t"},
+        {32: "uint32_t"},
+        {64: "uint64_t"}],
+
+    "libsel4": [
+        {8: "seL4_Uint8"},
+        {16: "seL4_Uint16"},
+        {32: "seL4_Uint32"},
+        {64: "seL4_Uint64"}]
+    }
+
+typedef_templateX = \
+"""struct %(name)s {
+    %(type_name)s words[%(multiple)d];
+};
+typedef struct %(name)s %(name)s_t;"""
 
 typedef_template = \
 """struct %(name)s {
@@ -1595,6 +1615,15 @@ class TaggedUnion:
 
     def generate(self, params):
         output = params.output
+
+        #print >>output, "//wink: options.environment=%s" % options.environment
+        #print >>output, "//wink: self.base=%d" % self.base
+        #print >>output, //"wink: type_name=%s" % type_template[options.environment, self.base]
+        # Generate typedef
+        #print >>output, typedef_templateX % \
+        #                {"type_name": type_template[options.environment, self.base], \
+        #                 "name": self.name, \
+        #                 "multiple": self.multiple}
 
         # Generate typedef
         print >>output, typedef_template % \

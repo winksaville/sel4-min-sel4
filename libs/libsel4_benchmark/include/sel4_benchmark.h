@@ -8,8 +8,8 @@
  * @TAG(NICTA_BSD)
  */
 
-#ifndef SEL4_BENCHMARK
-#define SEL4_BENCHMARK
+#ifndef __SEL4_BENCHMARK_H
+#define __SEL4_BENCHMARK_H
 
 #include <autoconf.h>
 
@@ -25,25 +25,25 @@
 static inline void
 seL4_BenchmarkDumpFullLog()
 {
-    sel4_uint32_t potential_size = seL4_BenchmarkLogSize();
+    seL4_Uint32 potential_size = seL4_BenchmarkLogSize();
 
-    for (sel4_uint32_t j = 0; j < potential_size; j += MAX_IPC_BUFFER) {
-        sel4_uint32_t chunk = potential_size - j;
-        sel4_uint32_t requested = chunk > MAX_IPC_BUFFER ? MAX_IPC_BUFFER : chunk;
-        sel4_uint32_t recorded = seL4_BenchmarkDumpLog(j, requested);
-        for (sel4_uint32_t i = 0; i < recorded; i++) {
-            sel4_printf("%u\t", seL4_GetMR(i));
+    for (seL4_Uint32 j = 0; j < potential_size; j += MAX_IPC_BUFFER) {
+        seL4_Uint32 chunk = potential_size - j;
+        seL4_Uint32 requested = chunk > MAX_IPC_BUFFER ? MAX_IPC_BUFFER : chunk;
+        seL4_Uint32 recorded = seL4_BenchmarkDumpLog(j, requested);
+        for (seL4_Uint32 i = 0; i < recorded; i++) {
+            seL4_Printf("%u\t", seL4_GetMR(i));
         }
-        sel4_printf("\n");
+        seL4_Printf("\n");
         /* we filled the log buffer */
         if (requested != recorded) {
-            sel4_printf("Dumped %u of %u potential logs\n", j + recorded, potential_size);
+            seL4_Printf("Dumped %u of %u potential logs\n", j + recorded, potential_size);
             return;
         }
     }
 
     /* logged amount was smaller than log buffer */
-    sel4_printf("Dumped entire log, size %u\n", potential_size);
+    seL4_Printf("Dumped entire log, size %u\n", potential_size);
 }
 
 #else // CONFIG_BENCHMARK is not defined
@@ -52,5 +52,5 @@ seL4_BenchmarkDumpFullLog()
 
 #endif // CONFIG_BENCHMARK
 
-#endif // SEL4_BENCHMARK
+#endif // __SEL4_BENCHMARK_H
 

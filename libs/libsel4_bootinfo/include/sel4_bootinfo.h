@@ -60,16 +60,16 @@ typedef struct {
     seL4_SlotRegion   userImagePTs;    /* userland-image PT caps */
     seL4_SlotRegion   untyped;         /* untyped-object caps (untyped caps) */
     seL4_Word         untypedPaddrList   [CONFIG_MAX_NUM_BOOTINFO_UNTYPED_CAPS]; /* physical address of each untyped cap */
-    sel4_uint8_t      untypedSizeBitsList[CONFIG_MAX_NUM_BOOTINFO_UNTYPED_CAPS]; /* size (2^n) bytes of each untyped cap */
-    sel4_uint8_t      initThreadCNodeSizeBits; /* initial thread's root CNode size (2^n slots) */
+    seL4_Uint8        untypedSizeBitsList[CONFIG_MAX_NUM_BOOTINFO_UNTYPED_CAPS]; /* size (2^n) bytes of each untyped cap */
+    seL4_Uint8        initThreadCNodeSizeBits; /* initial thread's root CNode size (2^n slots) */
     seL4_Word         numDeviceRegions;        /* number of device regions */
     seL4_DeviceRegion deviceRegions[CONFIG_MAX_NUM_BOOTINFO_DEVICE_REGIONS]; /* device regions */
-    sel4_uint32_t     initThreadDomain; /* Initial thread's domain ID */
-} seL4_BootInfo_t;
+    seL4_Uint32       initThreadDomain; /* Initial thread's domain ID */
+} seL4_BootInfo;
 
 /* function declarations */
 
-void seL4_InitBootInfo(seL4_BootInfo_t* bi);
-seL4_BootInfo_* seL4_GetBootInfo(void);
+void seL4_InitBootInfo(seL4_BootInfo* bi);
+seL4_BootInfo* seL4_GetBootInfo(void);
 
 #endif // __SEL4_BOOTINFO_H

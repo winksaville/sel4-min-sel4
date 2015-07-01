@@ -12,6 +12,6 @@
 /**
  * Halt execution of the current thread.
  */
-void sel4_halt(void);
+void seL4_Halt(void);
 
 #endif

@@ -13,20 +13,20 @@
 #include <sel4_putchar.h>
 #include <sel4_printf.h>
 
-static sel4_uint32_t
+static seL4_Uint32
 print_string(const char *s)
 {
-    sel4_uint32_t n;
+    seL4_Uint32 n;
 
     for (n = 0; *s; s++, n++) {
-        sel4_putchar(*s);
+        seL4_PutChar(*s);
     }
 
     return n;
 }
 
-static sel4_uint32_t
-xdiv(sel4_uint32_t x, sel4_uint32_t denom)
+static seL4_Uint32
+xdiv(seL4_Uint32 x, seL4_Uint32 denom)
 {
     switch (denom) {
     case 16:
@@ -38,8 +38,8 @@ xdiv(sel4_uint32_t x, sel4_uint32_t denom)
     }
 }
 
-static sel4_uint32_t
-xmod(sel4_uint32_t x, sel4_uint32_t denom)
+static seL4_Uint32
+xmod(seL4_Uint32 x, seL4_Uint32 denom)
 {
     switch (denom) {
     case 16:
@@ -51,12 +51,12 @@ xmod(sel4_uint32_t x, sel4_uint32_t denom)
     }
 }
 
-sel4_uint32_t
-sel4_print_sel4_uint32_t(sel4_uint32_t x, sel4_uint32_t ui_base)
+seL4_Uint32
+print_seL4_Uint32(seL4_Uint32 x, seL4_Uint32 ui_base)
 {
     char out[11];
-    sel4_uint32_t i, j;
-    sel4_uint32_t d;
+    seL4_Uint32 i, j;
+    seL4_Uint32 d;
 
     /*
      * Only base 10 and 16 supported for now. We want to avoid invoking the
@@ -67,7 +67,7 @@ sel4_print_sel4_uint32_t(sel4_uint32_t x, sel4_uint32_t ui_base)
     }
 
     if (x == 0) {
-        sel4_putchar('0');
+        seL4_PutChar('0');
         return 1;
     }
 
@@ -82,19 +82,19 @@ sel4_print_sel4_uint32_t(sel4_uint32_t x, sel4_uint32_t ui_base)
     }
 
     for (j = i; j > 0; j--) {
-        sel4_putchar(out[j - 1]);
+        seL4_PutChar(out[j - 1]);
     }
 
     return i;
 }
 
 
-static sel4_uint32_t
-print_sel4_uint64_t(sel4_uint64_t x, sel4_uint32_t ui_base)
+static seL4_Uint32
+print_seL4_Uint64(seL4_Uint64 x, seL4_Uint32 ui_base)
 {
-    sel4_uint32_t upper, lower;
-    sel4_uint32_t n = 0;
-    sel4_uint32_t mask = 0xF0000000u;
+    seL4_Uint32 upper, lower;
+    seL4_Uint32 n = 0;
+    seL4_Uint32 mask = 0xF0000000u;
 
     /* only implemented for hex, decimal is harder without 64 bit division */
     if (ui_base != 16) {
@@ -102,33 +102,33 @@ print_sel4_uint64_t(sel4_uint64_t x, sel4_uint32_t ui_base)
     }
 
     /* we can't do 64 bit division so break it up into two hex numbers */
-    upper = (sel4_uint32_t) (x >> 32llu);
-    lower = (sel4_uint32_t) x;
+    upper = (seL4_Uint32) (x >> 32llu);
+    lower = (seL4_Uint32) x;
 
     /* print first 32 bits if they exist */
     if (upper > 0) {
-        n += sel4_print_uint32_t(upper, ui_base);
+        n += print_seL4_Uint32(upper, ui_base);
 
         /* print leading 0s */
         while (!(mask & lower)) {
-            sel4_putchar('0');
+            seL4_PutChar('0');
             n++;
             mask = mask >> 4;
         }
     }
 
     /* print last 32 bits */
-    n += sel4_print_uint32_t(lower, ui_base);
+    n += print_seL4_Uint32(lower, ui_base);
 
     return n;
 }
 
 
 static int
-vprintf(const char *format, sel4_va_list ap)
+vprintf(const char *format, seL4_VaList ap)
 {
-    sel4_uint32_t n;
-    sel4_uint32_t formatting;
+    seL4_Uint32 n;
+    seL4_Uint32 formatting;
 
     if (!format) {
         return 0;
@@ -140,57 +140,57 @@ vprintf(const char *format, sel4_va_list ap)
         if (formatting) {
             switch (*format) {
             case '%':
-                sel4_putchar('%');
+                seL4_PutChar('%');
                 n++;
                 format++;
                 break;
 
             case 'd': {
-                int x = sel4_va_arg(ap, int);
+                int x = seL4_VaArg(ap, int);
 
                 if (x < 0) {
-                    sel4_putchar('-');
+                    seL4_PutChar('-');
                     n++;
                     x = -x;
                 }
 
-                n += sel4_print_sel4_uint32_t((sel4_uint32_t)x, 10);
+                n += print_seL4_Uint32((seL4_Uint32)x, 10);
                 format++;
                 break;
             }
 
             case 'u':
-                n += sel4_print_sel4_uint32_t(sel4_va_arg(ap, sel4_uint32_t), 10);
+                n += print_seL4_Uint32(seL4_VaArg(ap, seL4_Uint32), 10);
                 format++;
                 break;
 
             case 'x':
-                n += sel4_print_sel4_uint32_t(sel4_va_arg(ap, sel4_uint32_t), 16);
+                n += print_seL4_Uint32(seL4_VaArg(ap, seL4_Uint32), 16);
                 format++;
                 break;
 
             case 'p': {
-                sel4_uint32_t p = sel4_va_arg(ap, sel4_uint32_t);
+                seL4_Uint32 p = seL4_VaArg(ap, seL4_Uint32);
                 if (p == 0) {
                     n += print_string("(nil)");
                 } else {
                     n += print_string("0x");
-                    n += sel4_print_sel4_uint32_t(p, 16);
+                    n += print_seL4_Uint32(p, 16);
                 }
                 format++;
                 break;
             }
 
             case 's':
-                n += print_string(sel4_va_arg(ap, char *));
+                n += print_string(seL4_VaArg(ap, char *));
                 format++;
                 break;
 
             case 'l':
 		// Support llx only
                 if (*(format + 1) == 'l' && *(format + 2) == 'x') {
-                    sel4_uint64_t arg = sel4_va_arg(ap, sel4_uintt64_t);
-                    n += print_sel4_uint64_t(arg, 16);
+                    seL4_Uint64 arg = seL4_VaArg(ap, seL4_Uint64);
+                    n += print_seL4_Uint64(arg, 16);
                     format += 3;
                 }
                 break;
@@ -208,7 +208,7 @@ vprintf(const char *format, sel4_va_list ap)
                 break;
 
             default:
-                sel4_putchar(*format);
+                seL4_PutChar(*format);
                 n++;
                 format++;
                 break;
@@ -224,20 +224,20 @@ vprintf(const char *format, sel4_va_list ap)
  * subset of the typical libc printf:
  *   - %% ::= prints a percent
  *   - %d ::= prints a positive or negative long base 10
- *   - %u ::= prints an sel4_uint32_t base 10
- *   - %x ::= prints a sel4_uint32_t base 16
- *   - %p ::= prints a sel4_uint32_t assuming its a pointer base 16 with 0x prepended
+ *   - %u ::= prints an seL4_Uint32 base 10
+ *   - %x ::= prints a seL4_Uint32 base 16
+ *   - %p ::= prints a seL4_Uint32 assuming its a pointer base 16 with 0x prepended
  *   - %s ::= prints a string
- *   - %llx ::= prints a sel4_uint32_t long base 16
+ *   - %llx ::= prints a seL4_Uint32 long base 16
  */
-sel4_uint32_t
-sel4_printf(const char *format, ...)
+seL4_Uint32
+seL4_Printf(const char *format, ...)
 {
-    sel4_va_list args;
-    sel4_uint32_t i;
+    seL4_VaList args;
+    seL4_Uint32 i;
 
-    sel4_va_start(args, format);
+    seL4_VaStart(args, format);
     i = vprintf(format, args);
-    sel4_va_end(args);
+    seL4_VaEnd(args);
     return i;
 }

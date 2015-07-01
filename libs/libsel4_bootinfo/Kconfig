@@ -9,5 +9,6 @@
 menuconfig LIB_SEL4_BOOTINFO
     bool "Build sel4 bootinfo library"
     default n
+    select LIB_SEL4
     help
         Implements seL4_GetBootInfo and seL4_InitBootInfo.

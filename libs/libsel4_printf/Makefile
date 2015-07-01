@@ -14,7 +14,7 @@ CFILES   := src/sel4_printf.c
 ASMFILES :=
 
 # Libraries we need
-LIBS := sel4_putchar
+LIBS := sel4 sel4_putchar
 
 # Header files defined here that need to be staged
 HDRFILES := $(SOURCE_DIR)/include/*.h

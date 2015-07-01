@@ -29,7 +29,7 @@
  *   - %s ::= prints a string
  *   - %llx ::= prints a unsigned long long base 16
  */
-#define sel4_debug_printf(...) libsel4_printf(__VA_ARGS__)
+#define seL4_DebugPrintf(...) seL4_Printf(__VA_ARGS__)
 
 #endif
 

@@ -14,25 +14,25 @@
 #ifdef NDEBUG
 
 /** NDEBUG is defined do nothing */
-#define sel4_debug_assert(expr) ((void)(0))
+#define seL4_DebugAssert(expr) ((void)(0))
 
 /** NDEBUG is defined do nothing */
-#define sel4_debug_compile_assert(name, expr) ((void)(0))
+#define seL4_DebugCompileAssert(name, expr) ((void)(0))
 
 #else // NDEBUG is not defined
 
 #include <sel4_assert.h>
 
 /**
- * NDEBUG is not defined invoke sel4_assert(expr).
+ * NDEBUG is not defined invoke seL4_Assert(expr).
  */
-#define sel4_debug_assert(expr) libsel4_assert(expr)
+#define seL4_DebugAssert(expr) seL4_Assert(expr)
 
 /**
- * NDEBUG is not defined invoke sel4_compile_assert(expr).
+ * NDEBUG is not defined invoke seL4_CompileTimeAssert(expr).
  */
-#define sel4_debug_compile_assert(name, expr) \
-   sel4_compile_assert(name, expr)
+#define seL4_DebugCompileTimeAssert(name, expr) \
+   seL4_CompileTimeAssert(name, expr)
 
 
 #endif // NDEBUG

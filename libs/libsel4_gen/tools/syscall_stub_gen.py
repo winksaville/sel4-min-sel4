@@ -60,6 +60,40 @@ MESSAGE_REGISTERS_FOR_ARCH = {
     "arm": 4,
     "x86": 2,
 }
+# Headers to include depending on which environment we are generating code for.
+
+INCLUDES = {
+    'sel4':['stddef.h', 'stdbool.h', 'stdint.h', 'sel4/types.h',
+            'sel4/invocation.h', 'sel4/arch/functions.h', 'sel4/arch/sydcalls.h'],
+    'libsel4':['autoconf.h', 'sel4_types.h'],
+}
+TYPE_NAMES = {
+    'sel4':[
+        {'uint8_t': 'uint8_t'},
+        {'uint16_t': 'uint16_t'},
+        {'uint32_t': 'uint32_t'},
+        {'uint64_t': 'uint64_t'},
+        {'int8_t': 'int8_t'},
+        {'int16_t': 'int16_t'},
+        {'int32_t': 'int32_t'},
+        {'int64_t': 'int64_t'},
+        {'bool': 'bool'}],
+    'libsel4':[
+        {'uint8_t': 'seL4_Uint8'},
+        {'uint16_t': 'seL4_Uint16'},
+        {'uint32_t': 'seL4_Uint32'},
+        {'uint64_t': 'seL4_Uint64'},
+        {'int8_t': 'seL4_Int8'},
+        {'int16_t': 'seL4_Int16'},
+        {'int32_t': 'seL4_Int32'},
+        {'int64_t': 'seL4_Int64'},
+        {'bool': 'seL4_Bool'}],
+}
+
+NULL = {
+    "sel4": "NULL",
+    "libsel4": "seL4_Null"
+}
 
 class Type(object):
     """
@@ -190,7 +224,13 @@ types = [
         Type("uint64_t", 64, double_word=True),
         Type("int", WORD_SIZE_BITS),
         Type("bool", 1, native_size_bits=8),
+
+        Type("seL4_Uint8", 8),
+        Type("seL4_Uint16", 16),
+        Type("seL4_Uint32", 32),
+        Type("seL4_Uint64", 64, double_word=True),
         Type("seL4_Word", WORD_SIZE_BITS),
+        Type("seL4_Bool", 1, native_size_bits=8),
         Type("seL4_CapRights", WORD_SIZE_BITS),
 
         # seL4 Structures
@@ -442,7 +482,7 @@ def generate_result_struct(interface_name, method_name, output_params):
 
     return "\n".join(result)
 
-def generate_stub(arch, interface_name, method_name, method_id, input_params, output_params, structs, use_only_ipc_buffer):
+def generate_stub(environment, arch, interface_name, method_name, method_id, input_params, output_params, structs, use_only_ipc_buffer):
     result = []
 
     if use_only_ipc_buffer:
@@ -541,7 +581,7 @@ def generate_stub(arch, interface_name, method_name, method_id, input_params, ou
         if i < max(input_param_words, output_param_words):
             call_arguments.append("&mr%d" % i)
         else:
-            call_arguments.append("NULL")
+            call_arguments.append(NULL[environment])
     if use_only_ipc_buffer:
         result.append("\t/* Perform the call. */")
         result.append("\toutput_tag = seL4_Call(%s, tag);" % service_cap)
@@ -643,11 +683,16 @@ def parse_xml_file(input_file, valid_types):
 
     return (methods, structs)
 
-def generate_stub_file(arch, input_files, output_file, use_only_ipc_buffer):
+def generate_stub_file(environment, arch, input_files, output_file, use_only_ipc_buffer):
     """
     Generate a header file containing system call stubs for seL4.
     """
     result = []
+
+    # Ensure environment looks sane.
+    if not environment in INCLUDES.keys():
+        raise Exception("Invalid environment. Expected %s.",
+                " or ".join(INCLUDES.keys()))
 
     # Ensure architecture looks sane.
     if not arch in arch_types.keys():
@@ -670,15 +715,11 @@ def generate_stub_file(arch, input_files, output_file, use_only_ipc_buffer):
 
 #ifndef __LIBSEL4_SEL4_CLIENT_H
 #define __LIBSEL4_SEL4_CLIENT_H
-
-#include <stddef.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include "sel4/types.h"
-#include "sel4/invocation.h"
-#include "sel4/arch/functions.h"
-#include "sel4/arch/syscalls.h"
 """);
+
+    # Emit the includes
+    result.append('\n'.join(map(lambda x: '#include <%s>' % x,
+            INCLUDES[environment])))
 
     #
     # Emit code to ensure that all of our type sizes are consistent with
@@ -721,7 +762,7 @@ def generate_stub_file(arch, input_files, output_file, use_only_ipc_buffer):
     result.append(" * Generated stubs.")
     result.append(" */")
     for (interface_name, method_name, method_id, inputs, outputs) in methods:
-        result.append(generate_stub(arch, interface_name, method_name,
+        result.append(generate_stub(environment, arch, interface_name, method_name,
                 method_id, inputs, outputs, structs, use_only_ipc_buffer))
 
     # Print footer.
@@ -738,7 +779,9 @@ def main():
     # Read command line arguments.
     #
     parser = optparse.OptionParser(
-            usage = "usage: %prog -a <arch> [-o <ouput file] <input XML> [<input XML> ...]")
+            usage = "usage: %prog -a <arch> -e [sel4 | libsel4] [-o <ouput file] <input XML> [<input XML> ...]")
+    parser.add_option("--environment", action="store", default="sel4",
+                      choices=INCLUDES.keys(), help="Environment is either sel4 or libsel4")
     parser.add_option("-a", "--arch",
             dest="arch", help="Architecture to generate stubs for.")
     parser.add_option("-o", "--output",
@@ -758,7 +801,7 @@ def main():
     input_files = args
 
     # Generate the stubs.
-    generate_stub_file(options.arch, input_files, options.output, options.buffer)
+    generate_stub_file(options.environment, options.arch, input_files, options.output, options.buffer)
 
 main()
 

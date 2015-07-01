@@ -11,7 +11,7 @@
 /**
  * Halt execution of the current thread.
  */
-void sel4_halt(void) {
+void seL4_Halt(void) {
     /** Do something nicer */
     while(1) {
     }

@@ -52,8 +52,8 @@ seL4_SendWithMRs(seL4_CPtr dest, seL4_MessageInfo_t msgInfo,
         : "a" (seL4_SysSend),
         "b" (dest),
         "S" (msgInfo.words[0]),
-        "D" (mr0 != NULL ? *mr0 : 0),
-        "c" (mr1 != NULL ? *mr1 : 0)
+        "D" (mr0 != seL4_Null ? *mr0 : 0),
+        "c" (mr1 != seL4_Null ? *mr1 : 0)
         : "%edx"
     );
 }
@@ -95,8 +95,8 @@ seL4_NBSendWithMRs(seL4_CPtr dest, seL4_MessageInfo_t msgInfo,
         : "a" (seL4_SysNBSend),
         "b" (dest),
         "S" (msgInfo.words[0]),
-        "D" (mr0 != NULL ? *mr0 : 0),
-        "c" (mr1 != NULL ? *mr1 : 0)
+        "D" (mr0 != seL4_Null ? *mr0 : 0),
+        "c" (mr1 != seL4_Null ? *mr1 : 0)
         : "%edx"
     );
 }
@@ -136,8 +136,8 @@ seL4_ReplyWithMRs(seL4_MessageInfo_t msgInfo,
         :
         : "a" (seL4_SysReply),
         "S" (msgInfo.words[0]),
-        "D" (mr0 != NULL ? *mr0 : 0),
-        "c" (mr1 != NULL ? *mr1 : 0)
+        "D" (mr0 != seL4_Null ? *mr0 : 0),
+        "c" (mr1 != seL4_Null ? *mr1 : 0)
         : "%ebx", "%edx"
     );
 }
@@ -224,10 +224,10 @@ seL4_WaitWithMRs(seL4_CPtr src, seL4_Word* sender,
         : "%edx", "memory"
     );
 
-    if (mr0 != NULL) {
+    if (mr0 != seL4_Null) {
         *mr0 = msg0;
     }
-    if (mr1 != NULL) {
+    if (mr1 != seL4_Null) {
         *mr1 = msg1;
     }
 
@@ -281,10 +281,10 @@ seL4_CallWithMRs(seL4_CPtr dest, seL4_MessageInfo_t msgInfo,
     seL4_Word msg0 = 0;
     seL4_Word msg1 = 0;
 
-    if (mr0 != NULL && seL4_MessageInfo_get_length(msgInfo) > 0) {
+    if (mr0 != seL4_Null && seL4_MessageInfo_get_length(msgInfo) > 0) {
         msg0 = *mr0;
     }
-    if (mr1 != NULL && seL4_MessageInfo_get_length(msgInfo) > 1) {
+    if (mr1 != seL4_Null && seL4_MessageInfo_get_length(msgInfo) > 1) {
         msg1 = *mr1;
     }
 
@@ -310,10 +310,10 @@ seL4_CallWithMRs(seL4_CPtr dest, seL4_MessageInfo_t msgInfo,
         : "%edx", "memory"
     );
 
-    if (mr0 != NULL) {
+    if (mr0 != seL4_Null) {
         *mr0 = msg0;
     }
-    if (mr1 != NULL) {
+    if (mr1 != seL4_Null) {
         *mr1 = msg1;
     }
 
@@ -369,10 +369,10 @@ seL4_ReplyWaitWithMRs(seL4_CPtr dest, seL4_MessageInfo_t msgInfo, seL4_Word *sen
     seL4_Word msg0 = 0;
     seL4_Word msg1 = 0;
 
-    if (mr0 != NULL && seL4_MessageInfo_get_length(msgInfo) > 0) {
+    if (mr0 != seL4_Null && seL4_MessageInfo_get_length(msgInfo) > 0) {
         msg0 = *mr0;
     }
-    if (mr1 != NULL && seL4_MessageInfo_get_length(msgInfo) > 1) {
+    if (mr1 != seL4_Null && seL4_MessageInfo_get_length(msgInfo) > 1) {
         msg1 = *mr1;
     }
 
@@ -398,10 +398,10 @@ seL4_ReplyWaitWithMRs(seL4_CPtr dest, seL4_MessageInfo_t msgInfo, seL4_Word *sen
         : "%edx", "memory"
     );
 
-    if (mr0 != NULL) {
+    if (mr0 != seL4_Null) {
         *mr0 = msg0;
     }
-    if (mr1 != NULL) {
+    if (mr1 != seL4_Null) {
         *mr1 = msg1;
     }
 

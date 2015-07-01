@@ -18,11 +18,13 @@
 #include <sel4/arch/constants.h>
 
 
-    .global _libsel4_start
+    .global _seL4_Start
+    .extern seL4_InitBootInfo
+    .extern seL4_Halt
 
     .text
 
-_libsel4_start:
+_seL4_Start:
     /* Setup a stack for ourselves. */
     ldr     sp, =_stack_top
 
@@ -32,7 +34,10 @@ _libsel4_start:
     /* Invoke 'int main(void);' */
     bl      main
 
-    /* If main returns ignore result and die */
+    /* IF main returns halt */
+    bl      seL4_Halt
+
+    /* If seL4_halt returns and die */
 1:  jmp     1b
 
 

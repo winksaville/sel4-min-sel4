@@ -6,15 +6,15 @@
  * See "LICENSE_BSD2.txt" for details.
  */
 
-#include <libsel4_putchar.h>
+#include <sel4_putchar.h>
 
 /**
  * No parameters are passed to main, the return
  * value is ignored and the program hangs.
  */
 int main(void) {
-  libsel4_putchar('A');
-  libsel4_putchar('\n');
+  seL4_PutChar('A');
+  seL4_PutChar('\n');
 
   return 0;
 }

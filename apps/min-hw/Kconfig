@@ -8,8 +8,10 @@
 menuconfig APP_MIN_HW
     bool "min-hw"
     default n
+    select LIB_SEL4
     select LIB_SEL4_GEN
     select LIB_SEL4_STARTUP
+    select LIB_SEL4_HALT
     select LIB_SEL4_BOOTINFO
     select LIB_SEL4_PUTCHAR
     help

@@ -14,7 +14,7 @@
 /**
  * Output ch to a "terminal"
  */
-void sel4_putchar(const char ch) {
+void seL4_PutChar(const char ch) {
 #ifdef DEBUG
     seL4_DebugPutChar(ch);
 #else

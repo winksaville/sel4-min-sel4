@@ -6,18 +6,18 @@
  * see "license_bsd2.txt" for details.
  */
 
-#ifndef _ARCH_SEL4_TYPES_H_
-#define _ARCH_SEL4_TYPES_H_
+#ifndef __ARCH_SEL4_TYPES_H_
+#define __ARCH_SEL4_TYPES_H_
 
-typedef signed char sel4_int8_t;
-typedef signed short sel4_int16_t;
-typedef signed int sel4_int32_t;
-typedef signed long long sel4_int64_t;
+typedef signed char seL4_Int8;
+typedef signed short seL4_Int16;
+typedef signed int seL4_Int32;
+typedef signed long long seL4_Int64;
 
-typedef unsigned char sel4_uint8_t;
-typedef unsigned short sel4_uint16_t;
-typedef unsigned int sel4_uint32_t;
-typedef unsigned long long sel4_uint64_t;
+typedef unsigned char seL4_Uint8;
+typedef unsigned short seL4_Uint16;
+typedef unsigned int seL4_Uint32;
+typedef unsigned long long seL4_Uint64;
 
 
 #endif
