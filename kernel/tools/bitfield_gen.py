@@ -179,29 +179,25 @@ def p_error(t):
 
 ## C templates
 
-type_template = {
-    "sel4": [
-        {8: "uint8_t"},
-        {16: "uint16_t"},
-        {32: "uint32_t"},
-        {64: "uint64_t"}],
+type_names = {
+    "sel4": {
+        8:  "uint8_t",
+        16: "uint16_t",
+        32: "uint32_t",
+        64: "uint64_t"
+    },
 
-    "libsel4": [
-        {8: "seL4_Uint8"},
-        {16: "seL4_Uint16"},
-        {32: "seL4_Uint32"},
-        {64: "seL4_Uint64"}]
+    "libsel4": {
+        8:  "seL4_Uint8",
+        16: "seL4_Uint16",
+        32: "seL4_Uint32",
+        64: "seL4_Uint64"
     }
-
-typedef_templateX = \
-"""struct %(name)s {
-    %(type_name)s words[%(multiple)d];
-};
-typedef struct %(name)s %(name)s_t;"""
+}
 
 typedef_template = \
 """struct %(name)s {
-    uint%(base)d_t words[%(multiple)d];
+    %(type_name)s words[%(multiple)d];
 };
 typedef struct %(name)s %(name)s_t;"""
 
@@ -226,13 +222,13 @@ ptr_generator_template = \
 }"""
 
 reader_template = \
-"""static inline uint%(base)d_t CONST
+"""static inline %(type_name)s CONST
 %(block)s_get_%(field)s(%(block)s_t %(block)s) {
     return (%(block)s.words[%(index)d] & 0x%(mask)x) %(r_shift_op)s %(shift)d;
 }"""
 
 ptr_reader_template = \
-"""static inline uint%(base)d_t PURE
+"""static inline %(type_name)s PURE
 %(block)s_ptr_get_%(field)s(%(block)s_t *%(block)s_ptr) {
     return (%(block)s_ptr->words[%(index)d] & 0x%(mask)x) """ \
     """%(r_shift_op)s %(shift)d;
@@ -240,7 +236,7 @@ ptr_reader_template = \
 
 writer_template = \
 """static inline %(block)s_t CONST
-%(block)s_set_%(field)s(%(block)s_t %(block)s, uint%(base)d_t v) {
+%(block)s_set_%(field)s(%(block)s_t %(block)s, %(type_name)s v) {
     /* fail if user has passed bits that we will override */
     %(block)s.words[%(index)d] &= ~0x%(mask)x;
     %(block)s.words[%(index)d] |= (v %(w_shift_op)s %(shift)d) & 0x%(mask)x;
@@ -249,7 +245,7 @@ writer_template = \
 
 ptr_writer_template = \
 """static inline void
-%(block)s_ptr_set_%(field)s(%(block)s_t *%(block)s_ptr, uint%(base)d_t v) {
+%(block)s_ptr_set_%(field)s(%(block)s_t *%(block)s_ptr, %(type_name)s v) {
     /* fail if user has passed bits that we will override */
     %(block)s_ptr->words[%(index)d] &= ~0x%(mask)x;
     %(block)s_ptr->words[%(index)d] |= (v %(w_shift_op)s """ \
@@ -277,13 +273,13 @@ ptr_union_generator_template = \
 }"""
 
 union_reader_template = \
-"""static inline uint%(base)d_t CONST
+"""static inline %(type_name)s CONST
 %(union)s_%(block)s_get_%(field)s(%(union)s_t %(union)s) {
     return (%(union)s.words[%(index)d] & 0x%(mask)x) %(r_shift_op)s %(shift)d;
 }"""
 
 ptr_union_reader_template = \
-"""static inline uint%(base)d_t PURE
+"""static inline %(type_name)s PURE
 %(union)s_%(block)s_ptr_get_%(field)s(%(union)s_t *%(union)s_ptr) {
     return (%(union)s_ptr->words[%(index)d] & 0x%(mask)x) """ \
     """%(r_shift_op)s %(shift)d;
@@ -291,7 +287,7 @@ ptr_union_reader_template = \
 
 union_writer_template = \
 """static inline %(union)s_t CONST
-%(union)s_%(block)s_set_%(field)s(%(union)s_t %(union)s, uint%(base)d_t v) {
+%(union)s_%(block)s_set_%(field)s(%(union)s_t %(union)s, %(type_name)s v) {
     /* fail if user has passed bits that we will override */
 
     %(union)s.words[%(index)d] &= ~0x%(mask)x;
@@ -302,7 +298,7 @@ union_writer_template = \
 ptr_union_writer_template = \
 """static inline void
 %(union)s_%(block)s_ptr_set_%(field)s(%(union)s_t *%(union)s_ptr,
-                                      uint%(base)d_t v) {
+                                      %(type_name)s v) {
 
     /* fail if user has passed bits that we will override */
 
@@ -312,7 +308,7 @@ ptr_union_writer_template = \
 }"""
 
 tag_reader_header_template = \
-"""static inline uint%(base)d_t CONST
+"""static inline %(type_name)s CONST
 %(union)s_get_%(tagname)s(%(union)s_t %(union)s) {
 """
 
@@ -330,7 +326,7 @@ tag_reader_footer_template = \
 
 tag_eq_reader_header_template = \
 """static inline int CONST
-%(union)s_%(tagname)s_equals(%(union)s_t %(union)s, uint%(base)d_t %(union)s_type_tag) {
+%(union)s_%(tagname)s_equals(%(union)s_t %(union)s, %(type_name)s %(union)s_type_tag) {
 """
 
 tag_eq_reader_entry_template = \
@@ -346,7 +342,7 @@ tag_eq_reader_footer_template = \
 }"""
 
 ptr_tag_reader_header_template = \
-"""static inline uint%(base)d_t PURE
+"""static inline %(type_name)s PURE
 %(union)s_ptr_get_%(tagname)s(%(union)s_t *%(union)s_ptr) {
 """
 
@@ -364,7 +360,7 @@ ptr_tag_reader_footer_template = \
 
 tag_writer_template = \
 """static inline %(union)s_t CONST
-%(union)s_set_%(tagname)s(%(union)s_t %(union)s, uint%(base)d_t v) {
+%(union)s_set_%(tagname)s(%(union)s_t %(union)s, %(type_name)s v) {
     /* fail if user has passed bits that we will override */
 
     %(union)s.words[%(index)d] &= ~0x%(mask)x;
@@ -374,7 +370,7 @@ tag_writer_template = \
 
 ptr_tag_writer_template = \
 """static inline void
-%(union)s_ptr_set_%(tagname)s(%(union)s_t *%(union)s_ptr, uint%(base)d_t v) {
+%(union)s_ptr_set_%(tagname)s(%(union)s_t *%(union)s_ptr, %(type_name)s v) {
     /* fail if user has passed bits that we will override */
 
     %(union)s_ptr->words[%(index)d] &= ~0x%(mask)x;
@@ -1616,18 +1612,9 @@ class TaggedUnion:
     def generate(self, params):
         output = params.output
 
-        #print >>output, "//wink: options.environment=%s" % options.environment
-        #print >>output, "//wink: self.base=%d" % self.base
-        #print >>output, //"wink: type_name=%s" % type_template[options.environment, self.base]
-        # Generate typedef
-        #print >>output, typedef_templateX % \
-        #                {"type_name": type_template[options.environment, self.base], \
-        #                 "name": self.name, \
-        #                 "multiple": self.multiple}
-
         # Generate typedef
         print >>output, typedef_template % \
-                        {"base": self.base, \
+                        {"type_name": type_names[options.environment][self.base], \
                          "name": self.name, \
                          "multiple": self.multiple}
         print >>output
@@ -1646,7 +1633,7 @@ class TaggedUnion:
         
         subs = {\
             'union': self.name, \
-            'base':  self.union_base, \
+            'type_name':  type_names[options.environment][self.union_base], \
             'tagname': self.tagname}
 
         # Generate tag reader
@@ -1700,7 +1687,7 @@ class TaggedUnion:
         
         for name, value, ref in self.tags:
             # Generate generators
-            arg_list = ["uint%d_t %s" % (self.base, field) for \
+            arg_list = ["%s %s" % (type_names[options.environment][self.base], field) for \
                             field in ref.visible_order if
                             field != self.tagname]
 
@@ -1724,7 +1711,7 @@ class TaggedUnion:
                 offset, size, high = ref.field_map[field]
 
                 if field == self.tagname:
-                    f_value = "(uint%d_t)%s_%s" % (self.base, self.name, name)
+                    f_value = "(%s)%s_%s" % (type_names[options.environment][self.base], self.name, name)
                 else:
                     f_value = field
 
@@ -1796,7 +1783,7 @@ class TaggedUnion:
                 subs = {\
                     "block": ref.name, \
                     "field": field, \
-                    "base": ref.base, \
+                    "type_name": type_names[options.environment][ref.base], \
                     "index": index, \
                     "shift": shift, \
                     "r_shift_op": read_shift, \
@@ -2282,13 +2269,13 @@ class Block:
 
         # Type definition
         print >>output, typedef_template % \
-                        {"base": self.base, \
+                        {"type_name": type_names[options.environment][self.base], \
                          "name": self.name, \
                          "multiple": self.multiple}
         print >>output
 
         # Generator
-        arg_list = ["uint%d_t %s" % (self.base, field) for \
+        arg_list = ["%s %s" % (type_names[options.environment][self.base], field) for \
                         field in self.visible_order]
         if len(arg_list) == 0:
             args = 'void'
@@ -2367,7 +2354,7 @@ class Block:
             subs = {\
                 "block": self.name, \
                 "field": field, \
-                "base": self.base, \
+                "type_name": type_names[options.environment][self.base], \
                 "index": index, \
                 "shift": shift, \
                 "r_shift_op": read_shift, \
