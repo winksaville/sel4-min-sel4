@@ -8,6 +8,6 @@
 apps-$(CONFIG_APP_TEST_NEWLIBS) += test-newlibs
 
 # Libraries needed
-test-newlibs-y = libsel4 libsel4_gen libsel4_benchmark
+test-newlibs-y = libsel4 libsel4_benchmark
 
 test-newlibs: kernel_elf $(test-newlibs-y)

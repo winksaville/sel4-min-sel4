@@ -17,7 +17,7 @@
 #define seL4_DebugAssert(expr) ((void)(0))
 
 /** NDEBUG is defined do nothing */
-#define seL4_DebugCompileAssert(name, expr) ((void)(0))
+#define seL4_DebugCompileTimeAssert(name, expr) ((void)(0))
 
 #else // NDEBUG is not defined
 

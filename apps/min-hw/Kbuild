@@ -8,6 +8,6 @@
 apps-$(CONFIG_APP_MIN_HW) += min-hw
 
 # LIbraries needed
-min-hw-y = libsel4 libsel4_gen
+min-hw-y = libsel4
 
 min-hw: kernel_elf $(min-hw-y)

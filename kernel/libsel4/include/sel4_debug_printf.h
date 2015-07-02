@@ -12,7 +12,7 @@
 #ifdef NDEBUG
 
 /** NOP printf as NDEBUG is defined */
-#define sel4_debug_printf(...) ((void)(0))
+#define seL4_DebugPrintf(...) ((void)(0))
 
 #else
 

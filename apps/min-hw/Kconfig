@@ -9,7 +9,6 @@ menuconfig APP_MIN_HW
     bool "min-hw"
     default n
     select LIB_SEL4
-    select LIB_SEL4_GEN
     help
         Minimal Hello World application
 

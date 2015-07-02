@@ -17,7 +17,7 @@ CFILES   := src/main.c
 ASMFILES :=
 
 # Libraries we need
-LIBS := sel4_gen sel4
+LIBS := sel4
 
 # extra flags
 CFLAGS += -Werror -ggdb -g3
