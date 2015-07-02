@@ -67,32 +67,25 @@ INCLUDES = {
             'sel4/invocation.h', 'sel4/arch/functions.h', 'sel4/arch/sydcalls.h'],
     'libsel4':['autoconf.h', 'sel4_types.h'],
 }
-TYPE_NAMES = {
-    'sel4':[
-        {'uint8_t': 'uint8_t'},
-        {'uint16_t': 'uint16_t'},
-        {'uint32_t': 'uint32_t'},
-        {'uint64_t': 'uint64_t'},
-        {'int8_t': 'int8_t'},
-        {'int16_t': 'int16_t'},
-        {'int32_t': 'int32_t'},
-        {'int64_t': 'int64_t'},
-        {'bool': 'bool'}],
-    'libsel4':[
-        {'uint8_t': 'seL4_Uint8'},
-        {'uint16_t': 'seL4_Uint16'},
-        {'uint32_t': 'seL4_Uint32'},
-        {'uint64_t': 'seL4_Uint64'},
-        {'int8_t': 'seL4_Int8'},
-        {'int16_t': 'seL4_Int16'},
-        {'int32_t': 'seL4_Int32'},
-        {'int64_t': 'seL4_Int64'},
-        {'bool': 'seL4_Bool'}],
-}
-
 NULL = {
     "sel4": "NULL",
     "libsel4": "seL4_Null"
+}
+
+type_names = {
+    "sel4": {
+        8:  "uint8_t",
+        16: "uint16_t",
+        32: "uint32_t",
+        64: "uint64_t"
+    },
+
+    "libsel4": {
+        8:  "seL4_Uint8",
+        16: "seL4_Uint16",
+        32: "seL4_Uint32",
+        64: "seL4_Uint64"
+    }
 }
 
 class Type(object):
@@ -153,9 +146,9 @@ class Type(object):
         assert(word_num == 0 or word_num == 1)
         
         if word_num == 0:
-            return "(uint{0}_t) {1}".format(WORD_SIZE_BITS, var_name)
+            return "({0}) {1}".format(type_names[environment][WORD_SIZE_BITS], var_name)
         elif word_num == 1:
-            return "(uint{0}_t) ({1} >> {0})".format(WORD_SIZE_BITS, var_name)
+            return "({0}) ({1} >> {0})".format(type_names[environment][WORD_SIZE_BITS], var_name)
         
 
 class PointerType(Type):
@@ -218,12 +211,12 @@ class Parameter(object):
 #
 types = [
         # Simple Types
-        Type("uint8_t", 8),
-        Type("uint16_t", 16),
-        Type("uint32_t", 32),
-        Type("uint64_t", 64, double_word=True),
+        #Type("uint8_t", 8),
+        #Type("uint16_t", 16),
+        #Type("uint32_t", 32),
+        #Type("uint64_t", 64, double_word=True),
         Type("int", WORD_SIZE_BITS),
-        Type("bool", 1, native_size_bits=8),
+        #Type("bool", 1, native_size_bits=8),
 
         Type("seL4_Uint8", 8),
         Type("seL4_Uint16", 16),
@@ -611,7 +604,7 @@ def generate_stub(environment, arch, interface_name, method_name, method_id, inp
                     result.append("\t%s->%s = %s;" % (param.name, members[i], words[i] % source_words))
             else:
                 if param.type.double_word:
-                    result.append("\tresult.%s = ((uint64_t)%s + ((uint64_t)%s << 32));" % (param.name, words[0] % source_words, words[1] % source_words))
+                    result.append("\tresult.%s = ((%s)%s + ((%s)%s << 32));" % (type_names[environment][64], param.name, words[0] % source_words, words[1] % source_words))
                 else:
                     for word in words:
                         result.append("\tresult.%s = %s;" % (param.name, word % source_words))

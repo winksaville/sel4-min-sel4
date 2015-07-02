@@ -508,7 +508,7 @@ seL4_DebugSnapshot(void)
 #endif
 
 #ifdef SEL4_DEBUG_KERNEL
-static inline uint32_t
+static inline seL4_Uint32
 seL4_DebugCapIdentify(seL4_CPtr cap)
 {
     register seL4_Word arg1 asm("r0") = cap;
@@ -516,7 +516,7 @@ seL4_DebugCapIdentify(seL4_CPtr cap)
     asm volatile ("swi %[swi_num]"
                   : "+r"(arg1)
                   : [swi_num] "i" __SWINUM(seL4_SysDebugCapIdentify), "r"(scno));
-    return (uint32_t)arg1;
+    return (seL4_Uint32)arg1;
 }
 #endif
 
@@ -567,7 +567,7 @@ seL4_BenchmarkResetLog(void)
 /* read size words from the log starting from start into the ipc buffer.
  * @return the amount sucessfully read. Will cap at ipc buffer size and at size of
  * recorded log */
-static inline uint32_t
+static inline seL4_Uint32
 seL4_BenchmarkDumpLog(seL4_Word start, seL4_Word size)
 {
 
@@ -578,13 +578,13 @@ seL4_BenchmarkDumpLog(seL4_Word start, seL4_Word size)
                   : "+r" (arg1)
                   : [swi_num] "i" __SWINUM(seL4_SysBenchmarkDumpLog), "r" (arg1), "r" (arg2), "r"(scno));
 
-    return (uint32_t) arg1;
+    return (seL4_Uint32) arg1;
 
 }
 
 /* Return the amount of things we tried to log. This could be greater than
  * the size of the log itself */
-static inline uint32_t
+static inline seL4_Uint32
 seL4_BenchmarkLogSize(void)
 {
 
@@ -594,7 +594,7 @@ seL4_BenchmarkLogSize(void)
                   : "+r" (arg1)
                   : [swi_num] "i" __SWINUM(seL4_SysBenchmarkLogSize), "r"(scno));
 
-    return (uint32_t) arg1;
+    return (seL4_Uint32) arg1;
 
 }
 

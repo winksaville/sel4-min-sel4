@@ -11,7 +11,8 @@
 #ifndef __LIBSEL4_ARCH_FUNCTIONS_H
 #define __LIBSEL4_ARCH_FUNCTIONS_H
 
-#include <sel4_types.h>
+//#include <sel4_types.h>
+//#include <sel4/types_gen.h>
 
 /* the segment loaded into GS points directly to the IPC buffer */
 

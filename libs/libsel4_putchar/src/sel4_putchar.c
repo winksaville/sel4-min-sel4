@@ -6,10 +6,9 @@
  * See "LICENSE_BSD2.txt" for details.
  */
 
+#include <sel4_types.h>
+
 #include <sel4_putchar.h>
-
-#include <sel4/arch/syscalls.h>
-
 
 /**
  * Output ch to a "terminal"

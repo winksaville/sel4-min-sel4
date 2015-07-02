@@ -484,7 +484,7 @@ seL4_DebugSnapshot(void)
 #endif
 
 #ifdef SEL4_DEBUG_KERNEL
-static inline uint32_t
+static inline seL4_Uint32
 seL4_DebugCapIdentify(seL4_CPtr cap)
 {
     asm volatile (
@@ -498,7 +498,7 @@ seL4_DebugCapIdentify(seL4_CPtr cap)
         : "a"(seL4_SysDebugCapIdentify), "b"(cap)
         : "%ecx", "%edx", "%esi", "%edi", "memory"
     );
-    return (uint32_t)cap;
+    return (seL4_Uint32)cap;
 }
 #endif
 
@@ -560,7 +560,7 @@ seL4_BenchmarkResetLog(void)
     );
 }
 
-static inline uint32_t
+static inline seL4_Uint32
 seL4_BenchmarkDumpLog(seL4_Word start, seL4_Word size)
 {
     asm volatile (
@@ -577,14 +577,14 @@ seL4_BenchmarkDumpLog(seL4_Word start, seL4_Word size)
         : "%ecx", "%edx", "%edi", "memory"
     );
 
-    return (uint32_t) start;
+    return (seL4_Uint32) start;
 }
 
 
-static inline uint32_t
+static inline seL4_Uint32
 seL4_BenchmarkLogSize(void)
 {
-    uint32_t ret = 0;
+    seL4_Uint32 ret = 0;
     asm volatile (
         "pushl %%ebp        \n"
         "movl %%esp, %%ecx  \n"
