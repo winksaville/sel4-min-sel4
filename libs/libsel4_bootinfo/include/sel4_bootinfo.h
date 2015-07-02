@@ -11,8 +11,8 @@
 #ifndef __SEL4_BOOTINFO_H
 #define __SEL4_BOOTINFO_H
 
-#include <autoconf.h>
-#include <sel4_types.h>
+//#include <autoconf.h>
+//#include <sel4_types.h>
 
 /* caps with fixed slot potitions in the root CNode */
 
