@@ -10,7 +10,6 @@ menuconfig LIB_SEL4_BENCHMARK
     bool "Build sel4 benchmark library"
     default n
     select BENCHMARK
-    select LIB_SEL4_PUTCHAR
-    select LIB_SEL4_PRINTF
+    select LIB_SEL4
     help
         Implements the benchmark.

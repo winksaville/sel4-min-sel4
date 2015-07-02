@@ -10,10 +10,6 @@ menuconfig APP_MIN_HW
     default n
     select LIB_SEL4
     select LIB_SEL4_GEN
-    select LIB_SEL4_STARTUP
-    select LIB_SEL4_HALT
-    select LIB_SEL4_BOOTINFO
-    select LIB_SEL4_PUTCHAR
     help
         Minimal Hello World application
 

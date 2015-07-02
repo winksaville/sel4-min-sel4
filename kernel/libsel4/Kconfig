@@ -12,11 +12,5 @@ menuconfig LIB_SEL4
     bool "Build sel4 library"
     default n
     select LIB_SEL4_GEN
-    select LIB_SEL4_STARTUP
-    select LIB_SEL4_BOOTINFO
-    select LIB_SEL4_PUTCHAR
-    select LIB_SEL4_HALT
-    select LIB_SEL4_ASSERT
-    select LIB_SEL4_PRINTF
     help
         "Build the sel4 library"

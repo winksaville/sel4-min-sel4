@@ -25,14 +25,8 @@ endmenu
 
 menu "seL4 Libraries"
     source "libs/libsel4_gen/Kconfig"
-    source "libs/libsel4_startup/Kconfig"
-    source "libs/libsel4_bootinfo/Kconfig"
-    source "libs/libsel4_assert/Kconfig"
-    source "libs/libsel4_halt/Kconfig"
-    source "libs/libsel4_benchmark/Kconfig"
-    source "libs/libsel4_printf/Kconfig"
-    source "libs/libsel4_putchar/Kconfig"
     source "libs/libsel4/Kconfig"
+    source "libs/libsel4_benchmark/Kconfig"
 endmenu
 
 source "$COMMON_PATH/Kconfig"

@@ -25,7 +25,7 @@ HDRFILES := \
 	$(wildcard $(SOURCE_DIR)/include/*) \
 	$(wildcard $(SOURCE_DIR)/arch_include/$(ARCH)/*)
 
-#libs := sel4_assert
+libs := sel4_gen
 
 .DEFAULT_GOAL := default
 

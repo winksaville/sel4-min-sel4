@@ -7,4 +7,4 @@
 #
 
 libs-$(CONFIG_LIB_SEL4_BENCHMARK) += libsel4_benchmark
-libsel4_benchmark: common libsel4_putchar libsel4_printf
+libsel4_benchmark: common libsel4

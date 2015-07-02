@@ -14,7 +14,7 @@ CFILES :=
 ASMFILES :=
 
 # Libraries we need
-LIBS :=
+LIBS := sel4
 
 # Header files defined here that need to be staged
 HDRFILES := $(wildcard $(SOURCE_DIR)/include/*)

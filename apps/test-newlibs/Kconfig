@@ -8,15 +8,9 @@
 menuconfig APP_TEST_NEWLIBS
     bool "test-newlibs"
     default n
-    select LIB_SEL4_GEN 
-    select LIB_SEL4_STARTUP 
-    select LIB_SEL4_BOOTINFO 
-    select LIB_SEL4_HALT 
-    select LIB_SEL4_BENCHMARK 
-    select LIB_SEL4_PUTCHAR 
-    select LIB_SEL4_ASSERT 
-    select LIB_SEL4_PRINTF 
     select LIB_SEL4
+    select LIB_SEL4_GEN
+    select LIB_SEL4_BENCHMARK
     help
         Test new libs
 

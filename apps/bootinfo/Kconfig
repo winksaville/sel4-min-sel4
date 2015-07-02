@@ -8,12 +8,8 @@
 menuconfig APP_BOOTINFO
     bool "bootinfo"
     default n
-    select LIB_SEL4_GEN 
-    select LIB_SEL4_STARTUP 
-    select LIB_SEL4_HALT
-    select LIB_SEL4_BOOTINFO
-    select LIB_SEL4_PUTCHAR 
-    select LIB_SEL4_PRINTF 
+    select LIB_SEL4_GEN
+    select LIB_SEL4
     help
         Bootinfo
 
