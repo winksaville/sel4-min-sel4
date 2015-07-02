@@ -7,4 +7,4 @@
 #
 
 libs-$(CONFIG_LIB_SEL4_BOOTINFO) += libsel4_bootinfo
-libsel4_bootinfo: common libsel4 libsel4_gen
+libsel4_bootinfo: common libsel4_gen

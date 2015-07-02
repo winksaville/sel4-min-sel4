@@ -14,7 +14,7 @@ CFILES   := src/sel4_bootinfo.c
 ASMFILES :=
 
 # Libraries we need
-LIBS := sel4 sel4_gen
+LIBS := sel4_gen
 
 # Header files defined here that need to be staged
 HDRFILES := $(wildcard $(SOURCE_DIR)/include/*)
