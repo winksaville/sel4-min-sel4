@@ -32,8 +32,13 @@ DEBUG = False
 
 # Headers to include depending on which environment we are generating code for.
 INCLUDES = {
-    'sel4':['config.h', 'stdint.h', 'util.h'],
-    'libsel4':['autoconf.h', 'sel4_types.h'],
+    'sel4':['assert.h', 'config.h', 'stdint.h', 'util.h'],
+    'libsel4':['sel4_debug_assert.h', 'autoconf.h', 'sel4_types.h'],
+}
+
+ASSERTS = {
+    'sel4': 'assert',
+    'libsel4': 'seL4_DebugAssert'
 }
 
 TYPES = {
@@ -238,6 +243,7 @@ writer_template = \
 """static inline %(block)s_t CONST
 %(block)s_set_%(field)s(%(block)s_t %(block)s, %(type)s v) {
     /* fail if user has passed bits that we will override */
+    %(assert)s(((~0x%(mask)x %(r_shift_op)s %(shift)d) & v) == 0);
     %(block)s.words[%(index)d] &= ~0x%(mask)x;
     %(block)s.words[%(index)d] |= (v %(w_shift_op)s %(shift)d) & 0x%(mask)x;
     return %(block)s;
@@ -247,6 +253,7 @@ ptr_writer_template = \
 """static inline void
 %(block)s_ptr_set_%(field)s(%(block)s_t *%(block)s_ptr, %(type)s v) {
     /* fail if user has passed bits that we will override */
+    %(assert)s(((~0x%(mask)x %(r_shift_op)s %(shift)d) & v) == 0);
     %(block)s_ptr->words[%(index)d] &= ~0x%(mask)x;
     %(block)s_ptr->words[%(index)d] |= (v %(w_shift_op)s """ \
     """%(shift)d) & 0x%(mask)x;
@@ -275,12 +282,19 @@ ptr_union_generator_template = \
 union_reader_template = \
 """static inline %(type)s CONST
 %(union)s_%(block)s_get_%(field)s(%(union)s_t %(union)s) {
+    %(assert)s(((%(union)s.words[%(tagindex)d] >> %(tagshift)d) & 0x%(tagmask)x) ==
+           %(union)s_%(block)s);
+
     return (%(union)s.words[%(index)d] & 0x%(mask)x) %(r_shift_op)s %(shift)d;
 }"""
 
 ptr_union_reader_template = \
 """static inline %(type)s PURE
 %(union)s_%(block)s_ptr_get_%(field)s(%(union)s_t *%(union)s_ptr) {
+    %(assert)s(((%(union)s_ptr->words[%(tagindex)d] >> """ \
+    """%(tagshift)d) & 0x%(tagmask)x) ==
+           %(union)s_%(block)s);
+
     return (%(union)s_ptr->words[%(index)d] & 0x%(mask)x) """ \
     """%(r_shift_op)s %(shift)d;
 }"""
@@ -288,7 +302,10 @@ ptr_union_reader_template = \
 union_writer_template = \
 """static inline %(union)s_t CONST
 %(union)s_%(block)s_set_%(field)s(%(union)s_t %(union)s, %(type)s v) {
+    %(assert)s(((%(union)s.words[%(tagindex)d] >> %(tagshift)d) & 0x%(tagmask)x) ==
+           %(union)s_%(block)s);
     /* fail if user has passed bits that we will override */
+    %(assert)s(((~0x%(mask)x %(r_shift_op)s %(shift)d) & v) == 0);
 
     %(union)s.words[%(index)d] &= ~0x%(mask)x;
     %(union)s.words[%(index)d] |= (v %(w_shift_op)s %(shift)d) & 0x%(mask)x;
@@ -299,8 +316,12 @@ ptr_union_writer_template = \
 """static inline void
 %(union)s_%(block)s_ptr_set_%(field)s(%(union)s_t *%(union)s_ptr,
                                       %(type)s v) {
+    %(assert)s(((%(union)s_ptr->words[%(tagindex)d] >> """ \
+    """%(tagshift)d) & 0x%(tagmask)x) ==
+           %(union)s_%(block)s);
 
     /* fail if user has passed bits that we will override */
+    %(assert)s(((~0x%(mask)x %(r_shift_op)s %(shift)d) & v) == 0);
 
     %(union)s_ptr->words[%(index)d] &= ~0x%(mask)x;
     %(union)s_ptr->words[%(index)d] |= """ \
@@ -362,6 +383,7 @@ tag_writer_template = \
 """static inline %(union)s_t CONST
 %(union)s_set_%(tagname)s(%(union)s_t %(union)s, %(type)s v) {
     /* fail if user has passed bits that we will override */
+    %(assert)s(((~0x%(mask)x %(r_shift_op)s %(shift)d) & v) == 0);
 
     %(union)s.words[%(index)d] &= ~0x%(mask)x;
     %(union)s.words[%(index)d] |= (v << %(shift)d) & 0x%(mask)x;
@@ -372,6 +394,7 @@ ptr_tag_writer_template = \
 """static inline void
 %(union)s_ptr_set_%(tagname)s(%(union)s_t *%(union)s_ptr, %(type)s v) {
     /* fail if user has passed bits that we will override */
+    %(assert)s(((~0x%(mask)x %(r_shift_op)s %(shift)d) & v) == 0);
 
     %(union)s_ptr->words[%(index)d] &= ~0x%(mask)x;
     %(union)s_ptr->words[%(index)d] |= (v << %(shift)d) & 0x%(mask)x;
@@ -1729,9 +1752,17 @@ class TaggedUnion:
                         mask = (1 << size) - 1
 
                     field_inits.append(
+                        "    /* fail if user has passed bits that we will override */")
+                    field_inits.append(
+                        "    %s((%s & ~0x%x) == 0);" % (ASSERTS[options.environment], f_value, mask))
+                    field_inits.append(
                         "    %s.words[%d] |= (%s & 0x%x) %s %d;" % \
                          (self.name, index, f_value, mask, shift_op, shift))
 
+                    ptr_field_inits.append(
+                        "    /* fail if user has passed bits that we will override */")
+                    ptr_field_inits.append(
+                        "    %s((%s & ~0x%x) == 0);" % (ASSERTS[options.environment], f_value, mask))
                     ptr_field_inits.append(
                         "    %s_ptr->words[%d] |= (%s & 0x%x) %s %d;" % \
                         (self.name, index, f_value, mask, shift_op, shift))
@@ -1784,6 +1815,7 @@ class TaggedUnion:
                     "block": ref.name, \
                     "field": field, \
                     "type": TYPES[options.environment][ref.base], \
+                    "assert": ASSERTS[options.environment], \
                     "index": index, \
                     "shift": shift, \
                     "r_shift_op": read_shift, \
@@ -2308,9 +2340,17 @@ class Block:
                     mask = (1 << size) - 1
 
                 field_inits.append(
+                    "    /* fail if user has passed bits that we will override */")
+                field_inits.append(
+                    "    %s((%s & ~0x%x) == 0);" % (ASSERTS[options.environment], field, mask))
+                field_inits.append(
                     "    %s.words[%d] |= (%s & 0x%x) %s %d;" % \
                     (self.name, index, field, mask, shift_op, shift))
 
+                ptr_field_inits.append(
+                    "    /* fail if user has passed bits that we will override */")
+                ptr_field_inits.append(
+                    "    %s((%s & ~0x%x) == 0);" % (ASSERTS[options.environment], field, mask))
                 ptr_field_inits.append(
                     "    %s_ptr->words[%d] |= (%s & 0x%x) %s %d;" % \
                     (self.name, index, field, mask, shift_op, shift))
@@ -2355,6 +2395,7 @@ class Block:
                 "block": self.name, \
                 "field": field, \
                 "type": TYPES[options.environment][self.base], \
+                "assert": ASSERTS[options.environment], \
                 "index": index, \
                 "shift": shift, \
                 "r_shift_op": read_shift, \
