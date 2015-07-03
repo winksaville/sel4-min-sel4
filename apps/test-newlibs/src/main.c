@@ -16,6 +16,11 @@
 #include <sel4_benchmark.h>
 #include <sel4_bootinfo.h>
 
+/* A volatile value so compiler won't optimize usages away */
+volatile seL4_Uint32 volatile0 = 0;
+volatile seL4_Uint32 volatile1 = 1;
+volatile seL4_Uint32 volatile2 = 2;
+
 /**
  * No parameters are passed to main, the return
  * value is ignored and the program hangs.
@@ -48,10 +53,10 @@ int main(void) {
 
     seL4_BenchmarkDumpFullLog();
 
-    seL4_Assert(0 == 0);
-    seL4_DebugAssert(0 == 0);
-    seL4_CompileTimeAssert(CTA_Test2, 1 == 1);
-    seL4_DebugCompileTimeAssert(DCTA_Test2, 2 == 2);
+    seL4_Assert(volatile0 == 0);
+    seL4_DebugAssert(volatile0 == 0);
+    seL4_CompileTimeAssert(CTA_Test2, volatile1 == 1);
+    seL4_DebugCompileTimeAssert(DCTA_Test2, volatile2 == 2);
     seL4_Bool b = seL4_True;
     seL4_Assert(b != seL4_False);
   

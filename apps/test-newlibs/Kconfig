@@ -9,7 +9,9 @@ menuconfig APP_TEST_NEWLIBS
     bool "test-newlibs"
     default n
     select LIB_SEL4
+    select LIB_SEL4_ASSERT
     select LIB_SEL4_BENCHMARK
+    select LIB_SEL4_PRINTF
     help
         Test new libs
 

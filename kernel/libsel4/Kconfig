@@ -10,7 +10,9 @@
 
 menuconfig LIB_SEL4
     bool "Build sel4 library"
-    default y
+    default n
+    select LIB_SEL4_GEN
+    select LIB_SEL4_HALT
     help
         "Build the sel4 library"
 
