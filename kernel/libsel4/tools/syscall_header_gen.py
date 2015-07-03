@@ -1,1 +1,1 @@
-../../tools/syscall_header_gen.py
+../../../kernel/tools/syscall_header_gen.py

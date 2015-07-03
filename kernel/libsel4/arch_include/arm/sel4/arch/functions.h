@@ -11,7 +11,7 @@
 #ifndef __LIBSEL4_ARCH_FUNCTIONS_H
 #define __LIBSEL4_ARCH_FUNCTIONS_H
 
-#include <sel4/types.h>
+#include <sel4_types.h>
 
 enum {
     seL4_GlobalsFrame = 0xffffc000,

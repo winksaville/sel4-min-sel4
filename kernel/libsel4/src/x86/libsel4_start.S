@@ -8,7 +8,7 @@
  * @TAG(NICTA_BSD)
  */
 /*
- * A default _libsel4_start. It initalizes sel4_BootInfo and invokes
+ * A default _seL4_start. It initalizes seL4_BootInfo and invokes
  * int main(void). The return value is ignored and then this hangs.
  */
 
@@ -18,14 +18,16 @@
 #include <sel4/arch/constants.h>
 
 
-    .global _libsel4_start
+    .global _seL4_Start
+    .extern seL4_InitBootInfo
+    .extern seL4_Halt
 
     .text
 
 #ifdef X86_64
 
 .align 0x1000
-_libsel4_start:
+_seL4_Start:
     leaq    _stack_top, %esp
 
     /* Setup segment selector for IPC buffer access. */
@@ -33,13 +35,12 @@ _libsel4_start:
     movw    %ax, %gs
 
     /* Setup the global "bootinfo" structure. */
-    /* Invoke 'seL4_BootInfo* seL4_GetBootInfo();' to get address */
     movq    %rbx, %rdi
     call    seL4_InitBootInfo
 
 #else
 
-_libsel4_start:
+_seL4_Start:
     leal    _stack_top, %esp
 
     /* Setup segment selector for IPC buffer access. */
@@ -47,16 +48,19 @@ _libsel4_start:
     movw    %ax, %gs
 
     /* Setup the global "bootinfo" structure. */
-    /* Invoke 'seL4_BootInfo* seL4_GetBootInfo();' to get address */
     pushl   %ebx
     call    seL4_InitBootInfo
+    addl    $4, %esp
 
 #endif
 
     /* Invoke 'int main(void);' */
     call    main
 
-    /* If main returns ignore result and die */
+    /* If main returns ignore result and halt */
+    call    seL4_Halt
+
+    /* If seL4_halt returns die */
 1:  jmp     1b
 
 

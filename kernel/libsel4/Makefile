@@ -91,4 +91,4 @@ include/interfaces/sel4_client.h: \
 	@${CHANGED_PATH} $@ \
         python ${SOURCE_DIR}/tools/syscall_stub_gen.py \
         $(if ${CONFIG_LIB_SEL4_STUBS_USE_IPC_BUFFER_ONLY},--buffer,) \
-        -a $(ARCH) -o $@ $^
+        -a $(ARCH) --environment libsel4 -o $@ $^

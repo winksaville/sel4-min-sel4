@@ -1,1 +1,1 @@
-../../tools/xmllint.sh
+../../../kernel/tools/xmllint.sh
