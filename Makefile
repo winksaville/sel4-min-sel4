@@ -21,15 +21,16 @@ include tools/common/project.mk
 QEMU := qemu-system-i386
 QEMU_FLAGS := -m 512 -nographic
 
-ifeq ("$(KERNEL)", "")
+ifeq ("$(KERNEL_IMAGE)", "")
   # Default kernel
-  KERNEL := "images/kernel-ia32-pc99"
+  KERNEL_IMAGE := "images/kernel-ia32-pc99"
 endif
 
-ifeq ("$(APP)", "")
+ifeq ("$(app)", "")
   # Default app
-  APP := "images/min-hw-image-ia32-pc99"
+  app := min-hw
 endif
+APP_IMAGE := "images/$(app)-image-ia32-pc99"
 
 ifeq ("$(QF)", "")
   # Qemu Flags that the user wants to add
@@ -37,12 +38,12 @@ ifeq ("$(QF)", "")
 endif
 
 # note: this relies on qemu after version 2.0
-simulate-min-hw-ia32:
-	$(QEMU) $(QF) $(QEMU_FLAGS) -kernel $(KERNEL) -initrd $(APP)
+simulate:
+	$(QEMU) $(QF) $(QEMU_FLAGS) -kernel $(KERNEL_IMAGE) -initrd $(APP_IMAGE)
 
 # Start qemu in stopped mode (-S option) with a defualt TCP port localhost:1234 (-s option)
-debug-min-hw-ia32:
-	$(QEMU) -s -S $(QF) $(QEMU_FLAGS) -kernel $(KERNEL) -initrd $(APP)
+debug:
+	$(QEMU) -s -S $(QF) $(QEMU_FLAGS) -kernel $(KERNEL_IMAGE) -initrd $(APP_IMAGE)
 
 .PHONY: help
 help:

@@ -1,1 +1,1 @@
-../../tools/changed.sh
+../../../kernel/tools/changed.sh

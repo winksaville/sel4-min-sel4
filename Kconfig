@@ -14,7 +14,9 @@ config COMMON_PATH
     option env="COMMON_PATH"
 
 menu "seL4 Applications"
+    source "apps/test-newlibs/Kconfig"
     source "apps/min-hw/Kconfig"
+    source "apps/bootinfo/Kconfig"
 endmenu
 
 menu "seL4 Kernel"
@@ -23,6 +25,7 @@ endmenu
 
 menu "seL4 Libraries"
     source "libs/libsel4/Kconfig"
+    source "libs/libsel4_benchmark/Kconfig"
 endmenu
 
 source "$COMMON_PATH/Kconfig"

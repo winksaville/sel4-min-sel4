@@ -6,9 +6,12 @@
  * See "LICENSE_BSD2.txt" for details.
  */
 
-#ifndef __STDINT_H
-#define __STDINT_H
+#ifndef __SEL4_PUTCHAR_H
+#define __SEL4_PUTCHAR_H
 
-#include <sel4/arch/stdint.h>
+/**
+ * Output ch to a "terminal"
+ */
+void seL4_PutChar(const char ch);
 
 #endif

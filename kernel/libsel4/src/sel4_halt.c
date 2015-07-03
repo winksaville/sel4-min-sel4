@@ -6,19 +6,13 @@
  * See "LICENSE_BSD2.txt" for details.
  */
 
-#ifndef __STDBOOL_H
-#define __STDBOOL_H
+#include <sel4_halt.h>
 
-#ifndef true
-#define true 1
-#endif
-
-#ifndef false
-#define false 0
-#endif
-
-#ifndef bool
-#define bool char
-#endif
-
-#endif
+/**
+ * Halt execution of the current thread.
+ */
+void seL4_Halt(void) {
+    /** Do something nicer */
+    while(1) {
+    }
+}

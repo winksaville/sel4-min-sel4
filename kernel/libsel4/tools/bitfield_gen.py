@@ -1,1 +1,1 @@
-../../tools/bitfield_gen.py
+../../../kernel/tools/bitfield_gen.py

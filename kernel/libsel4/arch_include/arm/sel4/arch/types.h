@@ -12,7 +12,7 @@
 #define __LIBSEL4_ARCH_TYPES_H
 
 #include <sel4/macros.h>
-#include <stdint.h>
+#include <sel4_types.h>
 
 #define seL4_WordBits 32
 
@@ -28,7 +28,7 @@
 #define seL4_Frame_MRs 7
 #define seL4_Frame_HasNPC 0
 
-typedef uint32_t seL4_Word;
+typedef seL4_Uint32 seL4_Word;
 typedef seL4_Word seL4_CPtr;
 
 typedef seL4_CPtr seL4_ARM_Page;
@@ -49,7 +49,6 @@ typedef enum {
     seL4_ARM_ParityEnabled = 0x02,
     seL4_ARM_Default_VMAttributes = 0x03,
     seL4_ARM_ExecuteNever  = 0x04,
-    /* seL4_ARM_PageCacheable | seL4_ARM_ParityEnabled */
     SEL4_FORCE_LONG_ENUM(seL4_ARM_VMAttributes),
 } seL4_ARM_VMAttributes;
 

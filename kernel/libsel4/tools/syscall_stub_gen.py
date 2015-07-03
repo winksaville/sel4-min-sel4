@@ -60,6 +60,33 @@ MESSAGE_REGISTERS_FOR_ARCH = {
     "arm": 4,
     "x86": 2,
 }
+# Headers to include depending on which environment we are generating code for.
+
+INCLUDES = {
+    'sel4':['stddef.h', 'stdbool.h', 'stdint.h', 'sel4/types.h',
+            'sel4/invocation.h', 'sel4/arch/functions.h', 'sel4/arch/sydcalls.h'],
+    'libsel4':['autoconf.h', 'sel4_types.h'],
+}
+NULL = {
+    "sel4": "NULL",
+    "libsel4": "seL4_Null"
+}
+
+type_names = {
+    "sel4": {
+        8:  "uint8_t",
+        16: "uint16_t",
+        32: "uint32_t",
+        64: "uint64_t"
+    },
+
+    "libsel4": {
+        8:  "seL4_Uint8",
+        16: "seL4_Uint16",
+        32: "seL4_Uint32",
+        64: "seL4_Uint64"
+    }
+}
 
 class Type(object):
     """
@@ -119,9 +146,9 @@ class Type(object):
         assert(word_num == 0 or word_num == 1)
         
         if word_num == 0:
-            return "(uint{0}_t) {1}".format(WORD_SIZE_BITS, var_name)
+            return "({0}) {1}".format(type_names[environment][WORD_SIZE_BITS], var_name)
         elif word_num == 1:
-            return "(uint{0}_t) ({1} >> {0})".format(WORD_SIZE_BITS, var_name)
+            return "({0}) ({1} >> {0})".format(type_names[environment][WORD_SIZE_BITS], var_name)
         
 
 class PointerType(Type):
@@ -184,13 +211,19 @@ class Parameter(object):
 #
 types = [
         # Simple Types
-        Type("uint8_t", 8),
-        Type("uint16_t", 16),
-        Type("uint32_t", 32),
-        Type("uint64_t", 64, double_word=True),
+        #Type("uint8_t", 8),
+        #Type("uint16_t", 16),
+        #Type("uint32_t", 32),
+        #Type("uint64_t", 64, double_word=True),
         Type("int", WORD_SIZE_BITS),
-        Type("bool", 1, native_size_bits=8),
+        #Type("bool", 1, native_size_bits=8),
+
+        Type("seL4_Uint8", 8),
+        Type("seL4_Uint16", 16),
+        Type("seL4_Uint32", 32),
+        Type("seL4_Uint64", 64, double_word=True),
         Type("seL4_Word", WORD_SIZE_BITS),
+        Type("seL4_Bool", 1, native_size_bits=8),
         Type("seL4_CapRights", WORD_SIZE_BITS),
 
         # seL4 Structures
@@ -442,7 +475,7 @@ def generate_result_struct(interface_name, method_name, output_params):
 
     return "\n".join(result)
 
-def generate_stub(arch, interface_name, method_name, method_id, input_params, output_params, structs, use_only_ipc_buffer):
+def generate_stub(environment, arch, interface_name, method_name, method_id, input_params, output_params, structs, use_only_ipc_buffer):
     result = []
 
     if use_only_ipc_buffer:
@@ -541,7 +574,7 @@ def generate_stub(arch, interface_name, method_name, method_id, input_params, ou
         if i < max(input_param_words, output_param_words):
             call_arguments.append("&mr%d" % i)
         else:
-            call_arguments.append("NULL")
+            call_arguments.append(NULL[environment])
     if use_only_ipc_buffer:
         result.append("\t/* Perform the call. */")
         result.append("\toutput_tag = seL4_Call(%s, tag);" % service_cap)
@@ -571,7 +604,7 @@ def generate_stub(arch, interface_name, method_name, method_id, input_params, ou
                     result.append("\t%s->%s = %s;" % (param.name, members[i], words[i] % source_words))
             else:
                 if param.type.double_word:
-                    result.append("\tresult.%s = ((uint64_t)%s + ((uint64_t)%s << 32));" % (param.name, words[0] % source_words, words[1] % source_words))
+                    result.append("\tresult.%s = ((%s)%s + ((%s)%s << 32));" % (type_names[environment][64], param.name, words[0] % source_words, words[1] % source_words))
                 else:
                     for word in words:
                         result.append("\tresult.%s = %s;" % (param.name, word % source_words))
@@ -643,11 +676,16 @@ def parse_xml_file(input_file, valid_types):
 
     return (methods, structs)
 
-def generate_stub_file(arch, input_files, output_file, use_only_ipc_buffer):
+def generate_stub_file(environment, arch, input_files, output_file, use_only_ipc_buffer):
     """
     Generate a header file containing system call stubs for seL4.
     """
     result = []
+
+    # Ensure environment looks sane.
+    if not environment in INCLUDES.keys():
+        raise Exception("Invalid environment. Expected %s.",
+                " or ".join(INCLUDES.keys()))
 
     # Ensure architecture looks sane.
     if not arch in arch_types.keys():
@@ -670,15 +708,11 @@ def generate_stub_file(arch, input_files, output_file, use_only_ipc_buffer):
 
 #ifndef __LIBSEL4_SEL4_CLIENT_H
 #define __LIBSEL4_SEL4_CLIENT_H
-
-#include <stddef.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include "sel4/types.h"
-#include "sel4/invocation.h"
-#include "sel4/arch/functions.h"
-#include "sel4/arch/syscalls.h"
 """);
+
+    # Emit the includes
+    result.append('\n'.join(map(lambda x: '#include <%s>' % x,
+            INCLUDES[environment])))
 
     #
     # Emit code to ensure that all of our type sizes are consistent with
@@ -721,7 +755,7 @@ def generate_stub_file(arch, input_files, output_file, use_only_ipc_buffer):
     result.append(" * Generated stubs.")
     result.append(" */")
     for (interface_name, method_name, method_id, inputs, outputs) in methods:
-        result.append(generate_stub(arch, interface_name, method_name,
+        result.append(generate_stub(environment, arch, interface_name, method_name,
                 method_id, inputs, outputs, structs, use_only_ipc_buffer))
 
     # Print footer.
@@ -738,7 +772,9 @@ def main():
     # Read command line arguments.
     #
     parser = optparse.OptionParser(
-            usage = "usage: %prog -a <arch> [-o <ouput file] <input XML> [<input XML> ...]")
+            usage = "usage: %prog -a <arch> -e [sel4 | libsel4] [-o <ouput file] <input XML> [<input XML> ...]")
+    parser.add_option("--environment", action="store", default="sel4",
+                      choices=INCLUDES.keys(), help="Environment is either sel4 or libsel4")
     parser.add_option("-a", "--arch",
             dest="arch", help="Architecture to generate stubs for.")
     parser.add_option("-o", "--output",
@@ -758,7 +794,7 @@ def main():
     input_files = args
 
     # Generate the stubs.
-    generate_stub_file(options.arch, input_files, options.output, options.buffer)
+    generate_stub_file(options.environment, options.arch, input_files, options.output, options.buffer)
 
 main()
 

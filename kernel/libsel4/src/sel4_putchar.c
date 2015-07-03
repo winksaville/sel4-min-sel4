@@ -6,7 +6,17 @@
  * See "LICENSE_BSD2.txt" for details.
  */
 
-void halt(void) {
-    while(1) {
-    }
+#include <sel4_types.h>
+
+#include <sel4_putchar.h>
+
+/**
+ * Output ch to a "terminal"
+ */
+void seL4_PutChar(const char ch) {
+#ifdef DEBUG
+    seL4_DebugPutChar(ch);
+#else
+    // TODO: we need seL4_PutChar ????
+#endif
 }

@@ -6,11 +6,12 @@
  * See "LICENSE_BSD2.txt" for details.
  */
 
-#ifndef __STDDEF_H
-#define __STDDEF_H
+#ifndef __SEL4_HALT_H
+#define __SEL4_HALT_H
 
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
+/**
+ * Halt execution of the current thread.
+ */
+void seL4_Halt(void);
 
 #endif
